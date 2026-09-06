@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – Sudan Educational Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:           #F7F5F0;
+      --bg-card:      #FFFFFF;
+      --ink:          #1A1814;
+      --ink-mid:      #3D3A34;
+      --ink-soft:     #7A756A;
+      --accent:       #2B4C8C;
+      --accent-warm:  #C4943A;
+      --accent-light: rgba(43,76,140,0.08);
+      --success:      #2e7d32;
+      --success-bg:   #e8f5e9;
+      --warning:      #ed6c02;
+      --warning-bg:   #fff4e5;
+      --danger:       #d32f2f;
+      --border:       rgba(26,24,20,0.09);
+      --shadow-sm:    0 1px 4px rgba(26,24,20,0.06), 0 4px 16px rgba(26,24,20,0.04);
+      --shadow-md:    0 8px 32px rgba(26,24,20,0.09), 0 2px 8px rgba(26,24,20,0.05);
+      --shadow-hover: 0 20px 60px rgba(43,76,140,0.13), 0 4px 16px rgba(43,76,140,0.08);
+      --radius:       16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(196,148,58,0.06) 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(43,76,140,0.05) 0%, transparent 45%),
+        linear-gradient(rgba(26,24,20,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,24,20,0.018) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 56px 56px, 56px 56px;
+      pointer-events: none; z-index: 0;
+    }
+
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-warm) 50%, var(--accent) 100%);
+      z-index: 100;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: sticky; top: 3px; z-index: 90;
+      height: 60px; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(247,245,240,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-left { display: flex; align-items: center; gap: 18px; min-width: 0; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-soft); border: none; background: none;
+      cursor: pointer; text-decoration: none;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+    .back-btn:hover { color: var(--accent); }
+    .nav-divider { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
+    .nav-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    
+    .nav-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+
+
+    /* ── Page Layout ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 1000px; margin: 0 auto;
+      padding: 44px 48px 120px;
+    }
+
+    /* ── Header ── */
+    .dash-header {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; margin-bottom: 44px;
+      opacity: 0; animation: fadeUp 0.7s 0.05s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .uni-emblem-dash {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem; font-weight: 700;
+      color: #fff; margin-bottom: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1), 0 0 0 6px rgba(43,76,140,0.05);
+    }
+
+    .dash-uni-ar {
+      font-family: 'Amiri', serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--ink);
+      direction: rtl; margin-bottom: 4px;
+    }
+
+    .dash-uni-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 600; color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .college-tag-box {
+      display: inline-flex; flex-direction: column; align-items: center;
+      padding: 10px 24px; border-radius: 100px;
+      background: rgba(43,76,140,0.06); border: 1px solid rgba(43,76,140,0.15);
+      margin-bottom: 12px;
+    }
+    .college-name-ar {
+      font-family: 'Amiri', serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--accent);
+      direction: rtl; text-decoration: underline; text-underline-offset: 4px;
+    }
+    .college-name-en {
+      font-size: 0.95rem; font-weight: 600; color: var(--accent);
+      text-decoration: underline; text-underline-offset: 4px;
+    }
+
+    /* ── Content Grid ── */
+    .services-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+      opacity: 0; animation: fadeUp 0.7s 0.2s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      text-decoration: none; cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-warm));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(43,76,140,0.25);
+    }
+
+    .service-left {
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .service-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      background: rgba(43,76,140,0.06); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover .service-icon { transform: scale(1.1); background: var(--accent); color: #fff; }
+
+    .service-titles {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+
+    .service-en {
+      font-size: 0.88rem; font-weight: 600; color: var(--ink);
+    }
+
+    .service-ar {
+      font-family: 'Amiri', serif;
+      font-size: 0.92rem; font-weight: 500; color: var(--ink-soft);
+      direction: rtl;
+    }
+
+    .service-arrow {
+      color: var(--ink-soft); opacity: 0.5;
+      transition: transform 0.25s, opacity 0.25s, color 0.25s;
+    }
+
+    .service-card:hover .service-arrow {
+      transform: translateX(4px); opacity: 1; color: var(--accent);
+    }
+
+    /* ── Bottom strip ── */
+    .info-strip {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+      padding: 14px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(247,245,240,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+    }
+    .strip-left { display: flex; align-items: center; gap: 10px; }
+    .strip-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #3abe78; box-shadow: 0 0 0 3px rgba(58,190,120,0.2);
+      animation: blink 2.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .strip-status { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.07em; color: var(--ink-soft); }
+    .strip-right { font-size: 0.65rem; color: var(--ink-soft); opacity: 0.7; letter-spacing: 0.05em; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MODALS SYSTEM DESIGN ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(26, 24, 20, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      width: 100%; max-width: 900px;
+      max-height: 88vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.25);
+      transform: translateY(20px) scale(0.98);
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow: hidden; border: 1px solid var(--border);
+    }
+    .modal-overlay.active .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 28px;
+      background: #FDFCF7;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .modal-title-group { display: flex; flex-direction: column; gap: 2px; }
+    .modal-title-en { font-size: 1.2rem; font-weight: 700; color: var(--ink); }
+    .modal-title-ar { font-family: 'Amiri', serif; font-size: 1.05rem; color: var(--accent); direction: rtl; }
+
+    .modal-close-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--ink-soft); font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .modal-close-btn:hover { background: #fee2e2; color: var(--danger); border-color: transparent; }
+
+    .modal-body {
+      padding: 24px 28px; overflow-y: auto; flex: 1;
+    }
+
+    /* Common UI components for modules */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; justify-content: space-between;
+    }
+    .pills-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      padding: 6px 14px; border-radius: 100px; font-size: 0.78rem; font-weight: 600;
+      background: var(--bg); border: 1px solid var(--border); color: var(--ink-mid);
+      cursor: pointer; transition: all 0.2s ease;
+    }
+    .pill:hover, .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .search-input {
+      padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border);
+      font-size: 0.82rem; background: var(--bg); color: var(--ink); width: 220px; outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); background: #fff; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 600;
+    }
+    .badge-primary { background: rgba(43,76,140,0.1); color: var(--accent); }
+    .badge-success { background: var(--success-bg); color: var(--success); }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); }
+    .badge-gold { background: rgba(196,148,58,0.15); color: #8a6416; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: 100px; font-size: 0.82rem; font-weight: 600;
+      border: none; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #1f396b; box-shadow: var(--shadow-sm); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--ink-mid); }
+    .btn-outline:hover { background: var(--bg); color: var(--ink); }
+
+    /* Module specific component styling */
+    /* Question Bank */
+    .question-card {
+      background: #FDFCF7; border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px 20px; margin-bottom: 16px; transition: border-color 0.2s;
+    }
+    .question-card:hover { border-color: rgba(43,76,140,0.3); }
+    .q-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .q-text { font-weight: 600; font-size: 0.95rem; margin-bottom: 12px; color: var(--ink); }
+    .q-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .q-opt {
+      padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border);
+      background: #fff; font-size: 0.84rem; text-align: left; cursor: pointer;
+      transition: all 0.2s ease; color: var(--ink-mid);
+    }
+    .q-opt:hover { background: rgba(43,76,140,0.05); border-color: var(--accent); }
+    .q-opt.correct { background: #e8f5e9 !important; border-color: var(--success) !important; color: var(--success) !important; font-weight: 600; }
+    .q-opt.wrong { background: #ffebee !important; border-color: var(--danger) !important; color: var(--danger) !important; }
+    .q-exp {
+      background: rgba(43,76,140,0.05); padding: 12px 14px; border-radius: 10px;
+      font-size: 0.8rem; color: var(--ink-mid); border-left: 3px solid var(--accent); margin-top: 10px; display: none;
+    }
+
+    /* Lecture Videos */
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .video-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s;
+    }
+    .video-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+    .video-thumb {
+      height: 140px; background: #1A1814; position: relative;
+      display: flex; align-items: center; justify-content: center; color: #fff;
+    }
+    .play-icon {
+      width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; transition: transform 0.2s;
+    }
+    .video-card:hover .play-icon { transform: scale(1.15); background: var(--accent); }
+    .video-duration {
+      position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7);
+      color: #fff; font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 600;
+    }
+    .video-info { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .video-title { font-size: 0.88rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+    .video-instructor { font-size: 0.75rem; color: var(--ink-soft); }
+
+    /* Sharing & Uploads */
+    .file-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; background: #fff; border: 1px solid var(--border);
+      border-radius: 12px; margin-bottom: 10px; transition: background 0.2s;
+    }
+    .file-item:hover { background: #FAF8F5; }
+    .file-left { display: flex; align-items: center; gap: 14px; }
+    .file-type-icon {
+      width: 38px; height: 38px; border-radius: 10px; background: rgba(196,148,58,0.12);
+      color: var(--accent-warm); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;
+    }
+    .file-details { display: flex; flex-direction: column; }
+    .file-name { font-size: 0.86rem; font-weight: 600; color: var(--ink); }
+    .file-sub { font-size: 0.74rem; color: var(--ink-soft); }
+
+    /* Assignments & Exams */
+    .exam-card {
+      background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%);
+      border: 1px solid var(--border); border-left: 4px solid var(--accent);
+      border-radius: 14px; padding: 16px 20px; margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    /* Results & Reports */
+    .report-header {
+      background: rgba(43,76,140,0.05); padding: 18px 24px; border-radius: 16px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+    }
+    .gpa-box {
+      background: var(--accent); color: #fff; padding: 12px 20px; border-radius: 14px;
+      text-align: center; box-shadow: var(--shadow-sm);
+    }
+    .gpa-num { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+    .gpa-lbl { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.85; }
+
+    .grade-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.84rem;
+    }
+    .grade-table th { background: var(--bg); text-align: left; padding: 10px 14px; color: var(--ink-soft); font-weight: 600; border-bottom: 1px solid var(--border); }
+    .grade-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--ink-mid); }
+
+    /* E-Library */
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .book-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden; display: flex; flex-direction: column; transition: all 0.2s ease; cursor: pointer;
+    }
+    .book-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent-warm); }
+    .book-cover {
+      height: 170px; background: linear-gradient(135deg, #2B4C8C, #1a2e57);
+      color: #fff; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;
+      position: relative;
+    }
+    .book-cover-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; line-height: 1.2; }
+    .book-author { font-size: 0.72rem; opacity: 0.85; }
+    .book-body { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .book-meta { font-size: 0.7rem; color: var(--ink-soft); }
+
+    @media (max-width: 768px) {
+      .page { padding: 28px 20px 90px; }
+      .nav { padding: 0 20px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .info-strip { padding: 10px 20px; }
+      .strip-right { display: none; }
+      .dash-uni-ar { font-size: 1.3rem; }
+      .dash-uni-en { font-size: 1.5rem; }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 20px 16px 90px; }
+      .nav { padding: 0 14px; }
+      .q-options { grid-template-columns: 1fr; }
+      .modal-card { max-height: 94vh; }
+      .college-tag-box { padding: 8px 16px; }
+      .service-card { padding: 16px 18px; }
+      .service-icon { width: 40px; height: 40px; font-size: 1.1rem; }
+      .book-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    }
+
+    @media (max-width: 400px) {
+      .book-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <nav class="nav">
+    <div class="nav-left">
+      <a id="back-link" href="login.html" class="back-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Sign Out
+      </a>
+      <div class="nav-divider"></div>
+      <span class="nav-title" id="nav-dash-title">Student Dashboard</span>
+    </div>
+
+    <div class="nav-right">
+      <div class="nav-lang" style="font-size:0.68rem;color:var(--ink-soft);display:inline-flex;gap:4px;">
+        <span class="lang-en active">EN</span>
+        <span>|</span>
+        <span class="lang-ar">عربي</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div class="uni-emblem-dash" style="overflow:hidden;background:#fff;border:1.5px solid var(--border);">
+        <img id="dash-logo-img" src="" alt="University Logo" style="width:100%;height:100%;object-fit:contain;padding:8px;display:block;" onerror="this.style.display='none';document.getElementById('dash-logo').style.display='flex';" />
+        <div id="dash-logo" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:#fff;">UD</div>
+      </div>
+      <div class="dash-uni-ar" id="dash-uni-ar">جامعة دنقلا</div>
+      <div class="dash-uni-en" id="dash-uni-en">Dongola University</div>
+
+      <div class="college-tag-box">
+        <span class="college-name-ar" id="dash-college-ar">الكليات الطبية والصحية والتمريض</span>
+        <span class="college-name-en" id="dash-college-en">Colleges Medical, Health, and Nursing</span>
+      </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="services-grid">
+
+      <a class="service-card" onclick="openModule('questions')">
+        <div class="service-left">
+          <div class="service-icon">❓</div>
+          <div class="service-titles">
+            <span class="service-en">Question Bank</span>
+            <span class="service-ar">بنك الأسئلة</span>
+          </div>
+        </div>
+        <svg class="service-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <a class="service-card" onclick="openModule('lectures')">
+        <div class="service-left">
+          <div class="service-icon">📹</div>
+          <div class="service-titles">
+            <span class="service-en">Lectures and Videos</span>
+            <span class="service-ar">محاضرات وفيديوهات</span>
+          </div>
+        </div>
+        <svg class="service-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <a class="service-card" onclick="openModule('sharing')">
+        <div class="service-left">
+          <div class="service-icon">📁</div>
+          <div class="service-titles">
+            <span class="service-en">Sharing content and files</span>
+            <span class="service-ar">مشاركة المحتوى والملفات</span>
+          </div>
+        </div>
+        <svg class="service-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <a class="service-card" onclick="openModule('uploading')">
+        <div class="service-left">
+          <div class="service-icon">📤</div>
+          <div class="service-titles">
+            <span class="service-en">Uploading files and assignments</span>
+            <span class="service-ar">رفع الملفات والواجبات</span>
+          </div>
+        </div>
+        <svg class="service-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <a class="service-card" onclick="openModule('exams')">
+        <div class="service-left">
+          <div class="service-icon">📝</div>
+          <div class="service-titles">
+            <span class="service-en">Assignments and Exams</span>
+            <span class="service-ar">الواجبات والامتحانات</span>
+          </div>
+        </div>
+        <svg class="service-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <a class="service-card" onclick="openModule('results')">
+        <div class="service-left">
+          <div class="service-icon">📊</div>
+          <div class="service-titles">
+            <span class="service-en">Results and Reports</span>
+            <span class="service-ar">النتائج والتقارير</span>
+          </div>
+        </div>
+        <svg class="service-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <a class="service-card" onclick="openModule('library')">
+        <div class="service-left">
+          <div class="service-icon">📚</div>
+          <div class="service-titles">
+            <span class="service-en">Electronic Library</span>
+            <span class="service-ar">المكتبة الالكترونية</span>
+          </div>
+        </div>
+        <svg class="service-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Info Bar -->
+  <div class="info-strip">
+    <div class="strip-left">
+      <div class="strip-dot"></div>
+      <span class="strip-status">Portal Active · Academic Year 2025–2026</span>
+    </div>
+    <span class="strip-right">Ministry of Higher Education & Scientific Research · Sudan</span>
+  </div>
+
+  <!-- DYNAMIC MODAL CONTAINER FOR ALL 7 MODULES -->
+  <div id="module-modal-overlay" class="modal-overlay" onclick="handleModalOverlayClick(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-title-en" id="modal-title-en">Module View</span>
+          <span class="modal-title-ar" id="modal-title-ar">عرض الوحدات</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeModuleModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Dynamic dummy content injected here -->
+      </div>
+    </div>
+  </div>
+
+  <script src="supabase-config.js"></script>
+  <script src="i18n.js"></script>
+  <script>
+    // Universities & Colleges Config
+    const universities = {
+      khartoum: { en: 'University of Khartoum', ar: 'جامعة الخرطوم', initials: 'UK', color: ['#1a3a6b','#2b5cbf'] },
+      dongola: { en: 'Dongola University', ar: 'جامعة دنقلا', initials: 'UD', color: ['#1a6b3a','#2bbf6e'] },
+      'open-sudan': { en: 'Open University of Sudan', ar: 'جامعة السودان المفتوحة', initials: 'OUS', color: ['#4a2a8c','#7a5cbf'] },
+      'blue-nile': { en: 'Blue Nile University', ar: 'جامعة النيل الأزرق', initials: 'BNU', color: ['#0f4c75','#1b6ca8'] },
+      kordofan: { en: 'University of Kordofan', ar: 'جامعة كردفان', initials: 'UK', color: ['#2d6a2d','#3d9a3d'] },
+      sennar: { en: 'University of Sennar', ar: 'جامعة سنجة', initials: 'US', color: ['#7a3d00','#bf6a1a'] },
+      kassala: { en: 'University of Kassala', ar: 'جامعة كسلا', initials: 'UKS', color: ['#2d4a1a','#4a8a2d'] },
+      geneina: { en: 'University of Geneina', ar: 'جامعة الجنينة', initials: 'UG', color: ['#006b5b','#00a88a'] },
+      'red-sea': { en: 'Red Sea University', ar: 'جامعة البحر الأحمر', initials: 'RSU', color: ['#8c1a1a','#bf2b2b'] },
+      gezira: { en: 'University of Gezira', ar: 'جامعة الجزيرة', initials: 'UGZ', color: ['#0d5c3a','#1a9462'] },
+      gadarif: { en: 'University of Gadarif', ar: 'جامعة القضارف', initials: 'UGA', color: ['#3d1a6b','#6b3dbf'] },
+      'white-nile': { en: 'White Nile University', ar: 'جامعة النيل الأبيض', initials: 'WNU', color: ['#1a4a6b','#2b7abf'] },
+      'al-fashir': { en: 'University of Al Fashir', ar: 'جامعة الفاشر', initials: 'UAF', color: ['#5c3d00','#9c6d1a'] }
+    };
+
+    const colleges = {
+      medical: { en: 'Colleges Medical, Health, and Nursing', ar: 'الكليات الطبية والصحية والتمريض' },
+      science: { en: 'Colleges Scientific and Engineering', ar: 'الكليات العلمية والهندسية' },
+      agriculture: { en: 'Colleges Agricultural and Environmental', ar: 'الكليات الزراعية والبيئية' },
+      humanities: { en: 'Colleges Humanities, Education, and Administrative', ar: 'الكليات الإنسانية والتربوية والإدارية' }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const uniId = params.get('uni') || 'dongola';
+    const collegeId = params.get('college') || 'medical';
+
+    const uni = universities[uniId] || universities['dongola'];
+    const college = colleges[collegeId] || colleges['medical'];
+
+    document.getElementById('dash-uni-ar').textContent = uni.ar;
+    document.getElementById('dash-uni-en').textContent = uni.en;
+    document.getElementById('dash-college-ar').textContent = college.ar;
+    document.getElementById('dash-college-en').textContent = college.en;
+
+    const backLink = document.getElementById('back-link');
+    backLink.addEventListener('click', async function(e) {
+      e.preventDefault();
+      sessionStorage.removeItem('portal_current_user');
+      const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+      if (client) {
+        try { await client.auth.signOut(); } catch(err) {}
+      }
+      window.location.href = `login.html?uni=${uniId}&college=${collegeId}`;
+    });
+
+    document.getElementById('dash-logo-img').src = `assets/logos/${uniId}.png`;
+    const logoEl = document.getElementById('dash-logo');
+    logoEl.textContent = uni.initials;
+    logoEl.style.background = `linear-gradient(135deg, ${uni.color[0]}, ${uni.color[1]})`;
+
+    // ESC key closes modal
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModuleModal();
+    });
+
+    function handleModalOverlayClick(e) {
+      if (e.target.id === 'module-modal-overlay') closeModuleModal();
+    }
+
+    function closeModuleModal() {
+      document.getElementById('module-modal-overlay').classList.remove('active');
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // RICH DUMMY DATA FOR ALL 7 MODULES
+    // ─────────────────────────────────────────────────────────────
+
+    const DUMMY_DATA = {
+      // 1. QUESTION BANK
+      questions: [
+        {
+          id: 1, subject: 'Anatomy', diff: 'Medium',
+          text: 'Which muscle is primarily responsible for initiating shoulder abduction from 0 to 15 degrees?',
+          options: ['Supraspinatus', 'Deltoid (Middle Fibers)', 'Infraspinatus', 'Subscapularis'],
+          correct: 0,
+          explanation: 'The supraspinatus muscle initiates arm abduction (first 0–15°), after which the deltoid takes over for abduction up to 90°.'
+        },
+        {
+          id: 2, subject: 'Pharmacology', diff: 'Hard',
+          text: 'A 55-year-old patient with hypertension and asthma requires blood pressure control. Which cardio-selective beta-blocker is most appropriate?',
+          options: ['Propranolol', 'Metoprolol', 'Labetalol', 'Timolol'],
+          correct: 1,
+          explanation: 'Metoprolol is a cardioselective Beta-1 adrenergic blocker that minimizes bronchospasm risk compared to non-selective beta-blockers like Propranolol.'
+        },
+        {
+          id: 3, subject: 'Physiology', diff: 'Easy',
+          text: 'What is the primary physiological pacemaker of the human heart?',
+          options: ['Atrioventricular (AV) Node', 'Sinoatrial (SA) Node', 'Bundle of His', 'Purkinje Fibers'],
+          correct: 1,
+          explanation: 'The Sinoatrial (SA) node located in the right atrium sets the normal intrinsic rhythm of heart rate (60–100 bpm).'
+        },
+        {
+          id: 4, subject: 'Pathology', diff: 'Hard',
+          text: 'Caseous necrosis surrounded by epithelioid histiocytes and Langhans giant cells is pathognomonic for:',
+          options: ['Acute Appendicitis', 'Mycobacterium Tuberculosis Infection', 'Myocardial Infarction', 'Viral Hepatitis'],
+          correct: 1,
+          explanation: 'Granulomatous inflammation with central caseous necrosis is classic for primary or secondary Tuberculosis.'
+        },
+        {
+          id: 5, subject: 'Microbiology', diff: 'Medium',
+          text: 'Gram-positive cocci in clusters that test positive for Catalase and Coagulase are identified as:',
+          options: ['Staphylococcus aureus', 'Streptococcus pyogenes', 'Enterococcus faecalis', 'Streptococcus pneumoniae'],
+          correct: 0,
+          explanation: 'Staphylococcus aureus is catalase-positive and coagulase-positive, distinguishing it from coagulase-negative staphylococci.'
+        },
+        {
+          id: 6, subject: 'Nursing Care', diff: 'Easy',
+          text: 'Following thyroidectomy surgery, which position best supports patient comfort and prevents airway compression?',
+          options: ['Trendelenburg Position', 'Semi-Fowler\'s Position with neck support', 'Prone Position', 'Left Lateral Position'],
+          correct: 1,
+          explanation: 'Semi-Fowler\'s position reduces postoperative edema and alleviates tension on cervical suture lines.'
+        },
+        {
+          id: 7, subject: 'Biochemistry', diff: 'Medium',
+          text: 'Which enzyme serves as the main rate-limiting step in the Glycolytic pathway?',
+          options: ['Hexokinase', 'Phosphofructokinase-1 (PFK-1)', 'Pyruvate Kinase', 'Aldolase'],
+          correct: 1,
+          explanation: 'PFK-1 is allosterically regulated by ATP, AMP, and Citrate, making it the key rate-limiting enzyme in glycolysis.'
+        },
+        {
+          id: 8, subject: 'Surgery', diff: 'Hard',
+          text: 'The classic triad of Charcot in acute ascending cholangitis consists of jaundice, right upper quadrant pain, and:',
+          options: ['Fever with chills', 'Severe hypotension', 'Altered mental status', 'Biliary colic with ascites'],
+          correct: 0,
+          explanation: 'Charcot\'s triad consists of fever/chills, jaundice, and RUQ abdominal pain. Reynolds\' pentad adds hypotension and altered mental status.'
+        },
+        {
+          id: 9, subject: 'Internal Medicine', diff: 'Medium',
+          text: 'A 42-year-old female presents with malar rash, photosensitivity, arthralgia, and positive anti-dsDNA antibodies. The diagnosis is:',
+          options: ['Rheumatoid Arthritis', 'Systemic Lupus Erythematosus (SLE)', 'Systemic Sclerosis', 'Sjögren\'s Syndrome'],
+          correct: 1,
+          explanation: 'Anti-dsDNA and anti-Smith antibodies are highly specific immunological markers for Systemic Lupus Erythematosus (SLE).'
+        },
+        {
+          id: 10, subject: 'Pediatrics', diff: 'Easy',
+          text: 'At what age is an infant expected to independently sit without support according to standard developmental milestones?',
+          options: ['3 months', '6–7 months', '10 months', '14 months'],
+          correct: 1,
+          explanation: 'Independent tripod or steady unsupported sitting is typically achieved between 6 to 7 months of age.'
+        },
+        {
+          id: 11, subject: 'Anatomy', diff: 'Medium',
+          text: 'Which nerve travels through the carpal tunnel beneath the flexor retinaculum of the wrist?',
+          options: ['Ulnar Nerve', 'Median Nerve', 'Radial Nerve', 'Musculocutaneous Nerve'],
+          correct: 1,
+          explanation: 'The Median Nerve traverses the carpal tunnel alongside the 9 flexor tendons of the digits.'
+        },
+        {
+          id: 12, subject: 'Pharmacology', diff: 'Medium',
+          text: 'Which intravenous antidote is indicated for the acute reversal of benzodiazepine-induced central nervous system depression?',
+          options: ['Naloxone', 'Flumazenil', 'Atropine', 'N-Acetylcysteine'],
+          correct: 1,
+          explanation: 'Flumazenil is a competitive antagonist at the GABA-A receptor benzodiazepine binding site.'
+        }
+      ],
+
+      // 2. LECTURES AND VIDEOS (REAL EMBEDDABLE LECTURES)
+      lectures: [
+        {
+          id: 1, title: 'Cardiovascular System: Anatomy & Cardiac Cycle',
+          instructor: 'Prof. Dr. Ahmed El-Sayed', course: 'Human Anatomy II',
+          duration: '38 mins', date: 'Oct 22, 2025', views: '2,840',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/3_pykyB2rV0',
+          thumb: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&q=80',
+          desc: 'Comprehensive dissection review of heart chambers, coronary vasculature, valve dynamics, and micro-histology of arterial walls.',
+          pdf: 'Anatomy_Cardio_System_Complete_Notes.pdf',
+          chapters: [
+            { time: '00:00', title: 'Cardiac chambers & pericardium' },
+            { time: '10:15', title: 'Coronary artery branches & blood supply' },
+            { time: '22:40', title: 'Cardiac conduction system & SA node' },
+            { time: '31:20', title: 'Clinical correlation: Myocardial infarction' }
+          ]
+        },
+        {
+          id: 2, title: 'General Surgery: Scrubbing, Sterile Field & Suturing',
+          instructor: 'Dr. Tariq Al-Hassan', course: 'General Surgery',
+          duration: '32 mins', date: 'Oct 18, 2025', views: '3,450',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/gXMN8_I33E8',
+          thumb: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&q=80',
+          desc: 'Demonstration of operating theater scrub procedures, instrument handling, and simple interrupted & mattress suture techniques.',
+          pdf: 'Surgical_Asepsis_Suturing_Protocols.pdf',
+          chapters: [
+            { time: '00:00', title: 'Surgical scrub & gowning protocol' },
+            { time: '08:30', title: 'Scalpel & needle driver mechanics' },
+            { time: '17:45', title: 'Interrupted vs continuous suturing' },
+            { time: '26:10', title: 'Wound closure & knot tying pearls' }
+          ]
+        },
+        {
+          id: 3, title: 'Clinical Pharmacology: Antihypertensive Agents',
+          instructor: 'Dr. Mona Abdelrahman', course: 'Pharmacology',
+          duration: '45 mins', date: 'Oct 20, 2025', views: '1,980',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/3yqZ8HlS-rM',
+          thumb: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80',
+          desc: 'Detailed breakdown of ACE inhibitors, ARBs, Calcium Channel Blockers, Beta-blockers, and Diuretics mechanisms and adverse effects.',
+          pdf: 'Pharmacology_Antihypertensive_Guide.pdf',
+          chapters: [
+            { time: '00:00', title: 'Renin-Angiotensin-Aldosterone System (RAAS)' },
+            { time: '12:10', title: 'ACEI & ARB pharmacology' },
+            { time: '25:00', title: 'Dihydropyridine vs Non-dihydropyridine CCBs' },
+            { time: '37:40', title: 'Stepwise hypertension treatment guidelines' }
+          ]
+        },
+        {
+          id: 4, title: 'General Pathology: Cell Injury, Apoptosis & Necrosis',
+          instructor: 'Prof. Ibrahim Khalil', course: 'Pathology',
+          duration: '42 mins', date: 'Oct 15, 2025', views: '1,670',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/gX8R4uQzEw8',
+          thumb: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=800&q=80',
+          desc: 'Exploring mechanisms of hypoxia, free radical damage, extrinsic and intrinsic apoptosis pathways, and coagulative necrosis patterns.',
+          pdf: 'Pathology_Cell_Injury_Necrosis.pdf',
+          chapters: [
+            { time: '00:00', title: 'Reversible vs Irreversible cell injury' },
+            { time: '14:20', title: 'Morphologic patterns of necrosis' },
+            { time: '28:15', title: 'Apoptotic cascades & Caspase activation' },
+            { time: '36:50', title: 'Pathologic calcification & Free radicals' }
+          ]
+        },
+        {
+          id: 5, title: 'Tropical Medicine: Malaria & Leishmaniasis in Sudan',
+          instructor: 'Prof. Dr. Faisal Babiker', course: 'Tropical Medicine',
+          duration: '50 mins', date: 'Oct 02, 2025', views: '4,140',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/q3MVRnx4KgE',
+          thumb: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80',
+          desc: 'Clinical presentation, rapid diagnostic test (RDT) interpretation, and national management protocols for Plasmodium falciparum and Visceral Leishmaniasis in Sudan.',
+          pdf: 'Sudan_National_Malaria_Guidelines.pdf',
+          chapters: [
+            { time: '00:00', title: 'Epidemiology & Anopheles vector biology' },
+            { time: '15:30', title: 'Severe falciparum malaria features & cerebral malaria' },
+            { time: '31:00', title: 'Artesunate IV dosing & ACT regimens' },
+            { time: '41:20', title: 'Visceral Leishmaniasis (Kala-Azar) diagnostic algorithm' }
+          ]
+        },
+        {
+          id: 6, title: 'Neuroscience: Cranial Nerves Assessment & Brainstem',
+          instructor: 'Dr. Khalid Mustapha', course: 'Neuroscience',
+          duration: '48 mins', date: 'Oct 08, 2025', views: '2,290',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/f1k5T2z_z5c',
+          thumb: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80',
+          desc: 'Detailed visual guide to cranial nerve nuclei, brainstem syndromes (Wallenberg & Weber), and clinical neurological examination.',
+          pdf: 'Neuroanatomy_Cranial_Nerves_Atlas.pdf',
+          chapters: [
+            { time: '00:00', title: 'Cranial nerves I - XII origin & exit foramen' },
+            { time: '16:40', title: 'Oculomotor, Trochlear & Abducens eye movements' },
+            { time: '30:15', title: 'Trigeminal and Facial nerve examination' },
+            { time: '40:00', title: 'Bulbar vs Pseudobulbar palsy signs' }
+          ]
+        },
+        {
+          id: 7, title: 'Pediatric Assessment & Developmental Milestones',
+          instructor: 'Dr. Samia Osman', course: 'Pediatrics & Nursing',
+          duration: '36 mins', date: 'Oct 12, 2025', views: '1,530',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/p4j9xG_K2w8',
+          thumb: 'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?w=800&q=80',
+          desc: 'Systematic pediatric examination techniques, APGAR scoring, gross motor, fine motor, social and language development milestones.',
+          pdf: 'Pediatric_Developmental_Milestones_Handbook.pdf',
+          chapters: [
+            { time: '00:00', title: 'Approach to pediatric physical examination' },
+            { time: '11:20', title: 'Gross & Fine motor developmental milestones' },
+            { time: '22:45', title: 'Red flags in pediatric development' },
+            { time: '30:10', title: 'Nutritional assessment & Growth charts' }
+          ]
+        },
+        {
+          id: 8, title: 'Emergency Medicine: Advanced Resuscitation (ACLS)',
+          instructor: 'Dr. Yasser Mahgoub', course: 'Emergency Medicine',
+          duration: '44 mins', date: 'Sep 28, 2025', views: '2,920',
+          videoUrl: 'https://www.youtube-nocookie.com/embed/M4-yC8hH1-k',
+          thumb: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80',
+          desc: 'Protocols for cardiac arrest algorithms (VF/VT vs Asystole/PEA), airway management, and shock resuscitation.',
+          pdf: 'Emergency_ACLS_Resuscitation_Protocols.pdf',
+          chapters: [
+            { time: '00:00', title: 'BLS high-quality chest compressions' },
+            { time: '13:15', title: 'Shockable vs Non-shockable rhythms' },
+            { time: '27:30', title: 'Epinephrine & Amiodarone administration' },
+            { time: '38:00', title: 'Post-cardiac arrest targeted temperature care' }
+          ]
+        }
+      ],
+
+      // 3. SHARING CONTENT AND FILES
+      sharing: [
+        {
+          id: 1, title: 'High-Yield Medical Anatomy Notes 2025 (Full Year)',
+          author: 'Sara Mahmoud (3rd Year Med)', size: '14.2 MB', format: 'PDF',
+          downloads: 640, rating: '4.9/5', cat: 'Notes & Summaries',
+          desc: 'Handwritten annotated diagrams and tables covering gross anatomy, embryology, and neuroanatomy.'
+        },
+        {
+          id: 2, title: 'Sudan Medical Board Exam (SMBE) Past Papers 2018–2025',
+          author: 'Dr. Hassan Idris', size: '28.5 MB', format: 'PDF',
+          downloads: 1420, rating: '5.0/5', cat: 'Past Papers',
+          desc: 'Compiled official questions with verified model answers and references for medical licensing board preparation.'
+        },
+        {
+          id: 3, title: 'Clinical Nursing Procedures Handbook & ICU Cheatsheet',
+          author: 'Nurse Amira Osman', size: '8.7 MB', format: 'PDF',
+          downloads: 710, rating: '4.8/5', cat: 'Clinical Guides',
+          desc: 'Step-by-step procedures for IV lines, catheterization, triage assessment, and medication dosage equations.'
+        },
+        {
+          id: 4, title: 'Pharmacology Drug Tables & Mnemonics',
+          author: 'Mohamed Bashir', size: '5.1 MB', format: 'PDF',
+          downloads: 930, rating: '4.9/5', cat: 'Notes & Summaries',
+          desc: 'Color-coded summary of antibiotics, autonomic drugs, and cardiac pharmacology with memory shortcuts.'
+        },
+        {
+          id: 5, title: 'Histology Lab Atlas with High-Res Micrographs',
+          author: 'Dept of Pathology', size: '42.0 MB', format: 'PDF',
+          downloads: 810, rating: '4.7/5', cat: 'Lab Manuals',
+          desc: 'Annotated microscopic slides of epithelium, connective tissue, bone, organ systems, and neoplasia.'
+        },
+        {
+          id: 6, title: 'Sudan National Essential Medicines Formulary 2025',
+          author: 'Ministry of Health & Pharmacy Board', size: '11.4 MB', format: 'PDF',
+          downloads: 1850, rating: '5.0/5', cat: 'Clinical Guides',
+          desc: 'Standardized national pharmaceutical reference for essential drug dosages, contraindications, and availability.'
+        },
+        {
+          id: 7, title: 'Clinical Examination & OSCE Station Practice Guide',
+          author: 'Sudan Medical Students Association', size: '19.8 MB', format: 'PDF',
+          downloads: 2310, rating: '4.9/5', cat: 'Past Papers',
+          desc: 'Full OSCE scenarios with examiner scoring checklists for respiratory, cardiovascular, abdomen, and cranial nerve exams.'
+        }
+      ],
+
+      // 4. UPLOADING FILES AND ASSIGNMENTS
+      uploads: [
+        {
+          id: 1, title: 'Anatomy Lab Report #4 – Histology Slide Identification',
+          course: 'Human Anatomy II', due: 'Oct 30, 2025', status: 'Pending',
+          grade: '—', feedback: 'Upload required before 11:59 PM.'
+        },
+        {
+          id: 2, title: 'Biochemistry Research Paper – Lipid Metabolism in Diabetes',
+          course: 'Medical Biochemistry', due: 'Nov 05, 2025', status: 'Submitted',
+          file: 'Biochem_Paper_Final_v2.pdf', grade: 'Under Review', feedback: 'Submitted on Oct 24, 2025. Verification in progress.'
+        },
+        {
+          id: 3, title: 'Community Health Field Survey Report – Dongola District',
+          course: 'Public Health & Nursing', due: 'Oct 15, 2025', status: 'Graded',
+          file: 'Community_Survey_Report.pdf', grade: '95 / 100 (A+)', feedback: 'Outstanding fieldwork data collection and clear analytical presentation!'
+        },
+        {
+          id: 4, title: 'Pharmacology Clinical Case Analysis #2',
+          course: 'Clinical Pharmacology', due: 'Nov 12, 2025', status: 'Pending',
+          grade: '—', feedback: 'Requires patient scenario response document.'
+        },
+        {
+          id: 5, title: 'General Surgery Suturing & Knot Tying Assessment',
+          course: 'General Surgery & Skills Lab', due: 'Oct 20, 2025', status: 'Graded',
+          file: 'Surgical_Skills_Logbook.pdf', grade: '92 / 100 (A)', feedback: 'Demonstrated excellent sterile technique and instrument economy.'
+        }
+      ],
+
+      // 5. ASSIGNMENTS AND EXAMS — loaded from localStorage (set by admin)
+      exams: (function() {
+        try {
+          const cached = JSON.parse(localStorage.getItem('portal_exam_schedule') || 'null');
+          if (cached && cached.length > 0) {
+            return cached.map((item, idx) => ({
+              id: item.id || idx + 1,
+              title: item.title,
+              type: item.type,
+              date: item.date ? new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : (item.limit || ''),
+              time: item.time ? (function(t) { const [h,m] = t.split(':').map(Number); const s = h>=12?'PM':'AM'; return `${(h%12||12).toString().padStart(2,'0')}:${m.toString().padStart(2,'0')} ${s}`; })(item.time) : (item.status === 'Completed' ? 'Completed' : ''),
+              venue: item.venue || '',
+              weight: item.weight || '',
+              limit: item.limit || '',
+              status: item.status,
+              score: item.status === 'Completed' ? (item.score || '') : '',
+              isQuiz: item.type === 'Active Online Quiz' && item.status === 'OPEN NOW'
+            }));
+          }
+        } catch(e) {}
+        // Fallback to defaults
+        return [
+          {
+            id: 1, title: 'Human Anatomy & Embryology Final Written Exam',
+            type: 'On-Campus Exam', date: 'Nov 10, 2025', time: '09:00 AM',
+            venue: 'Main Hall, Dongola University Medical Campus', weight: '40% of Total', status: 'Scheduled'
+          },
+          {
+            id: 2, title: 'Pharmacology & Therapeutics Computer Assessment',
+            type: 'Online Exam', date: 'Nov 18, 2025', time: '11:00 AM',
+            venue: 'Digital Lab Room B', weight: '30% of Total', status: 'Scheduled'
+          },
+          {
+            id: 3, title: 'Microbiology & Immunology Mid-Semester Quiz',
+            type: 'Active Online Quiz', limit: '25 Mins (15 Questions)',
+            status: 'OPEN NOW', isQuiz: true
+          },
+          {
+            id: 4, title: 'Physiology Semester 1 Final Exam',
+            type: 'Past Exam', date: 'Jul 14, 2025', time: 'Completed',
+            venue: 'Main Auditorium', score: '92 / 100 (Grade A)', status: 'Completed'
+          },
+          {
+            id: 5, title: 'Clinical Skills OSCE Objective Examination',
+            type: 'Practical OSCE', date: 'Nov 26, 2025', time: '08:30 AM',
+            venue: 'Clinical Skills & Simulation Center', weight: '30% of Total', status: 'Scheduled'
+          }
+        ];
+      })(),
+
+      // 6. RESULTS AND REPORTS
+      results: {
+        studentName: 'Omer Abdelaziz Ali',
+        studentId: 'DUN-2023-4819',
+        program: 'Bachelor of Medicine & Surgery (MBBS)',
+        gpa: '3.88',
+        completedCredits: '92 Hrs',
+        attendance: '97.2%',
+        honor: 'Dean\'s High Honors List',
+        courses: [
+          { code: 'MED-301', name: 'Human Anatomy & Embryology II', credits: 4, score: '94%', grade: 'A', points: 4.0 },
+          { code: 'MED-302', name: 'Medical Biochemistry & Genetics', credits: 3, score: '88%', grade: 'B+', points: 3.5 },
+          { code: 'MED-303', name: 'Human Physiology II', credits: 4, score: '91%', grade: 'A', points: 4.0 },
+          { code: 'MED-304', name: 'General & Systemic Pathology', credits: 4, score: '96%', grade: 'A', points: 4.0 },
+          { code: 'MED-305', name: 'Clinical Pharmacology I', credits: 3, score: '89%', grade: 'B+', points: 3.5 },
+          { code: 'MED-306', name: 'Community Medicine & Hygiene', credits: 2, score: '95%', grade: 'A', points: 4.0 },
+          { code: 'MED-307', name: 'Microbiology & Parasitology', credits: 3, score: '93%', grade: 'A', points: 4.0 },
+          { code: 'MED-308', name: 'Medical Ethics & Professionalism', credits: 1, score: '98%', grade: 'A+', points: 4.0 }
+        ]
+      },
+
+      // 7. ELECTRONIC LIBRARY
+      library: [
+        {
+          id: 1, title: "Gray's Anatomy: Clinical Basis", author: 'Susan Standring, PhD',
+          pages: '1,600 pp', cat: 'Textbooks', isbn: '978-0702077050',
+          desc: 'The definitive anatomical reference for medical students and clinicians globally.'
+        },
+        {
+          id: 2, title: "Harrison's Internal Medicine", author: 'Joseph Loscalzo, MD et al.',
+          pages: '4,012 pp', cat: 'Textbooks', isbn: '978-1264268504',
+          desc: 'Essential textbook covering clinical pathophysiology and disease management.'
+        },
+        {
+          id: 3, title: 'Lippincott Illustrated Pharmacology', author: 'Karen Whalen, PharmD',
+          pages: '680 pp', cat: 'Drug Guides', isbn: '978-1975170554',
+          desc: 'High-yield visual drug mechanisms and therapeutics manual.'
+        },
+        {
+          id: 4, title: 'Robbins Pathologic Basis of Disease', author: 'Vinay Kumar, MD et al.',
+          pages: '1,392 pp', cat: 'Textbooks', isbn: '978-0323531139',
+          desc: 'Gold-standard textbook for general and systemic tissue pathology.'
+        },
+        {
+          id: 5, title: 'Guyton & Hall Medical Physiology', author: 'John E. Hall, PhD',
+          pages: '1,150 pp', cat: 'Textbooks', isbn: '978-0323597128',
+          desc: 'Comprehensive study of cellular, cardiac, neural, and renal physiology.'
+        },
+        {
+          id: 6, title: "Netter's Atlas of Human Anatomy", author: 'Frank H. Netter, MD',
+          pages: '672 pp', cat: 'Atlases', isbn: '978-0323393225',
+          desc: 'Iconic hand-painted anatomical illustrations detailing human organ systems.'
+        },
+        {
+          id: 7, title: 'Sudanese Medical Journal 2025', author: 'MoH & Sudan Medical Council',
+          pages: '240 pp', cat: 'Journals', isbn: 'ISSN 0491-4481',
+          desc: 'Peer-reviewed clinical research articles, tropical medicine studies, and health reports.'
+        },
+        {
+          id: 8, title: 'Brunner & Suddarth Medical-Surgical Nursing', author: 'Janice L. Hinkle',
+          pages: '2,240 pp', cat: 'Nursing', isbn: '978-1975161033',
+          desc: 'Comprehensive clinical guide for nursing care, patient monitoring, and surgical care.'
+        },
+        {
+          id: 9, title: 'Oxford Handbook of Clinical Medicine', author: 'Ian B. Wilkinson et al.',
+          pages: '920 pp', cat: 'Clinical Guides', isbn: '978-0199689903',
+          desc: 'Pocket-sized clinical management guide for ward rounds and emergency care.'
+        },
+        {
+          id: 10, title: 'Bailey & Love\'s Short Practice of Surgery', author: 'P. Ronan O\'Connell et al.',
+          pages: '1,632 pp', cat: 'Textbooks', isbn: '978-0367618971',
+          desc: 'World-renowned textbook covering general surgery, trauma, and perioperative management.'
+        }
+      ]
+    };
+
+    // Check logged in user (SessionStorage or Supabase)
+    (async function checkUserSession() {
+      let displayName = 'Omer Abdelaziz Ali';
+      let displayId = 'DUN-2023-4819';
+
+      const localUser = JSON.parse(sessionStorage.getItem('portal_current_user') || 'null');
+      if (localUser && (localUser.first_name || localUser.name)) {
+        displayName = `${localUser.first_name || ''} ${localUser.last_name || ''}`.trim() || localUser.name;
+        if (localUser.id) displayId = localUser.id.replace('loc_', 'STU-');
+      } else {
+        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+        if (client) {
+          try {
+            const { data: { user } } = await client.auth.getUser();
+            if (user && user.user_metadata) {
+              const m = user.user_metadata;
+              if (m.first_name || m.last_name) {
+                displayName = `${m.first_name || ''} ${m.last_name || ''}`.trim();
+              }
+            }
+          } catch(e) {}
+        }
+      }
+
+      const navTitleEl = document.getElementById('nav-dash-title');
+      if (navTitleEl) navTitleEl.textContent = `${displayName} · Student Dashboard`;
+
+      if (DUMMY_DATA && DUMMY_DATA.results) {
+        DUMMY_DATA.results.studentName = displayName;
+        DUMMY_DATA.results.studentId = displayId;
+      }
+    })();
+
+    // ─────────────────────────────────────────────────────────────
+    // MODAL OPEN & RENDER LOGIC FOR ALL 7 MODULES
+    // ─────────────────────────────────────────────────────────────
+
+    function openModule(moduleId) {
+      const overlay = document.getElementById('module-modal-overlay');
+      const titleEn = document.getElementById('modal-title-en');
+      const titleAr = document.getElementById('modal-title-ar');
+      const body = document.getElementById('modal-body');
+
+      if (moduleId === 'questions') {
+        titleEn.textContent = 'Question Bank & Practice Exam Hub';
+        titleAr.textContent = 'بنك الأسئلة والامتحانات التجريبية';
+        renderQuestionBank(body);
+      } else if (moduleId === 'lectures') {
+        titleEn.textContent = 'Lectures and Video Materials';
+        titleAr.textContent = 'محاضرات وفيديوهات مرئية';
+        renderLectures(body);
+      } else if (moduleId === 'sharing') {
+        titleEn.textContent = 'Sharing Content and Files Hub';
+        titleAr.textContent = 'مشاركة المحتوى والملفات الدراسية';
+        renderSharing(body);
+      } else if (moduleId === 'uploading') {
+        titleEn.textContent = 'Uploading Files & Assignment Portal';
+        titleAr.textContent = 'رفع الملفات والواجبات';
+        renderUploading(body);
+      } else if (moduleId === 'exams') {
+        titleEn.textContent = 'Assignments and Exams Schedule';
+        titleAr.textContent = 'جدول الواجبات والامتحانات';
+        renderExams(body);
+      } else if (moduleId === 'results') {
+        titleEn.textContent = 'Academic Results and Reports';
+        titleAr.textContent = 'كشف النتائج والتقارير الأكاديمية';
+        renderResults(body);
+      } else if (moduleId === 'library') {
+        titleEn.textContent = 'Electronic Library & E-Books';
+        titleAr.textContent = 'المكتبة الالكترونية والكتب الرقمية';
+        renderLibrary(body);
+      }
+
+      if (window.i18n && window.i18n.applyTranslations) {
+        window.i18n.applyTranslations(body);
+      }
+
+      overlay.classList.add('active');
+    }
+
+    // 1. RENDER QUESTION BANK
+    function renderQuestionBank(container) {
+      let html = `
+        <div class="filter-bar">
+          <div class="pills-group">
+            <span class="pill active" onclick="filterQuestions('All', this)">All Subjects</span>
+            <span class="pill" onclick="filterQuestions('Anatomy', this)">Anatomy</span>
+            <span class="pill" onclick="filterQuestions('Pharmacology', this)">Pharmacology</span>
+            <span class="pill" onclick="filterQuestions('Physiology', this)">Physiology</span>
+            <span class="pill" onclick="filterQuestions('Pathology', this)">Pathology</span>
+            <span class="pill" onclick="filterQuestions('Surgery', this)">Surgery</span>
+            <span class="pill" onclick="filterQuestions('Internal Medicine', this)">Internal Medicine</span>
+            <span class="pill" onclick="filterQuestions('Pediatrics', this)">Pediatrics</span>
+          </div>
+          <button class="btn btn-primary" onclick="startQuickQuiz()">⚡ Quick 5-Q Practice Test</button>
+        </div>
+        <div id="questions-list">
+      `;
+
+      DUMMY_DATA.questions.forEach((q, idx) => {
+        let optsHtml = '';
+        q.options.forEach((opt, oIdx) => {
+          optsHtml += '<button class="q-opt" onclick="checkAnswer(' + q.id + ', ' + oIdx + ', ' + q.correct + ', this)">' + String.fromCharCode(65 + oIdx) + '. ' + opt + '</button>';
+        });
+
+        html += `
+          <div class="question-card" data-subject="${q.subject}">
+            <div class="q-meta">
+              <span class="badge badge-primary">${q.subject}</span>
+              <span class="badge ${q.diff==='Easy'?'badge-success':q.diff==='Medium'?'badge-warning':'badge-gold'}">${q.diff}</span>
+            </div>
+            <div class="q-text">Q${idx+1}. ${q.text}</div>
+            <div class="q-options">
+              ${optsHtml}
+            </div>
+            <div class="q-exp" id="exp-${q.id}">
+              <strong>💡 Explanation:</strong> ${q.explanation}
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function checkAnswer(qId, selectedIdx, correctIdx, btnEl) {
+      const parentCard = btnEl.closest('.question-card');
+      const allBtns = parentCard.querySelectorAll('.q-opt');
+      allBtns.forEach(b => b.disabled = true);
+
+      if (selectedIdx === correctIdx) {
+        btnEl.classList.add('correct');
+      } else {
+        btnEl.classList.add('wrong');
+        allBtns[correctIdx].classList.add('correct');
+      }
+
+      const expEl = document.getElementById(`exp-${qId}`);
+      if (expEl) expEl.style.display = 'block';
+    }
+
+    function filterQuestions(subject, pillEl) {
+      const pills = pillEl.parentElement.querySelectorAll('.pill');
+      pills.forEach(p => p.classList.remove('active'));
+      pillEl.classList.add('active');
+
+      const cards = document.querySelectorAll('.question-card');
+      cards.forEach(card => {
+        if (subject === 'All' || card.getAttribute('data-subject') === subject) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function startQuickQuiz() {
+      const body = document.getElementById('modal-body');
+      body.innerHTML = `
+        <div style="text-align:center; padding: 20px;">
+          <div class="badge badge-gold" style="font-size:0.9rem; padding:6px 16px; margin-bottom:12px;">Timed Practice Quiz</div>
+          <h3 style="margin-bottom:8px;">Sudan Medical Council Standard Mock Test</h3>
+          <p style="color:var(--ink-soft); font-size:0.85rem; margin-bottom:20px;">5 Random Questions · Time Allowed: 05:00 Mins</p>
+          <div id="quiz-question-container" style="text-align:left; background:#FDFCF7; padding:20px; border-radius:16px; border:1px solid var(--border);">
+            <!-- Live Question -->
+          </div>
+          <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+            <button class="btn btn-outline" onclick="openModule('questions')">← Exit Quiz</button>
+            <span id="quiz-timer" style="font-weight:700; color:var(--accent);">⏱️ Time: 04:58</span>
+          </div>
+        </div>
+      `;
+      loadQuizStep(0, 0);
+    }
+
+    function loadQuizStep(stepIdx, currentScore) {
+      const q = DUMMY_DATA.questions[stepIdx % DUMMY_DATA.questions.length];
+      const container = document.getElementById('quiz-question-container');
+      if (!container) return;
+
+      let optsHtml = '';
+      q.options.forEach((opt, i) => {
+        optsHtml += '<button class="q-opt" onclick="answerQuizStep(' + stepIdx + ', ' + i + ', ' + q.correct + ', ' + currentScore + ')">' + String.fromCharCode(65 + i) + '. ' + opt + '</button>';
+      });
+
+      container.innerHTML = `
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span class="badge badge-primary">Question ${stepIdx+1} of 5</span>
+          <span class="badge badge-gold">${q.subject}</span>
+        </div>
+        <h4 style="font-size:0.95rem; margin-bottom:16px;">${q.text}</h4>
+        <div class="q-options">
+          ${optsHtml}
+        </div>
+      `;
+    }
+
+    function answerQuizStep(stepIdx, chosen, correct, currentScore) {
+      let newScore = currentScore + (chosen === correct ? 1 : 0);
+      if (stepIdx + 1 < 5) {
+        loadQuizStep(stepIdx + 1, newScore);
+      } else {
+        const body = document.getElementById('modal-body');
+        body.innerHTML = `
+          <div style="text-align:center; padding: 40px 20px;">
+            <div style="font-size:3rem; margin-bottom:10px;">🎉</div>
+            <h2 style="color:var(--ink);">Quiz Completed!</h2>
+            <p style="color:var(--ink-soft); margin-bottom:20px;">Your final score is:</p>
+            <div style="display:inline-block; background:var(--accent); color:#fff; padding:16px 36px; border-radius:20px; font-size:2.2rem; font-weight:700; margin-bottom:24px;">
+              ${newScore} / 5
+            </div>
+            <p style="font-size:0.9rem; color:var(--success); font-weight:600; margin-bottom:24px;">
+              ${newScore >= 4 ? 'Great performance! You are well prepared.' : 'Good attempt! Keep reviewing the question bank.'}
+            </p>
+            <button class="btn btn-primary" onclick="openModule('questions')">Return to Question Bank</button>
+          </div>
+        `;
+      }
+    }
+
+    // 2. RENDER LECTURES & VIDEOS (REAL EMBEDDABLE LECTURES)
+    function renderLectures(container) {
+      // Load admin-uploaded lectures from localStorage
+      let adminUploads = [];
+      try {
+        adminUploads = JSON.parse(localStorage.getItem('portal_uploaded_lectures') || '[]');
+      } catch(e) {}
+
+      let html = `
+        <div class="filter-bar" style="flex-wrap:wrap; gap:10px;">
+          <div class="pills-group" style="flex-wrap:wrap;">
+            <span class="pill active" onclick="filterLectures('All', this)">All Courses</span>
+            <span class="pill" onclick="filterLectures('Human Anatomy', this)">Anatomy</span>
+            <span class="pill" onclick="filterLectures('Pharmacology', this)">Pharmacology</span>
+            <span class="pill" onclick="filterLectures('General Surgery', this)">Surgery</span>
+            <span class="pill" onclick="filterLectures('Pathology', this)">Pathology</span>
+            <span class="pill" onclick="filterLectures('Tropical Medicine', this)">Tropical Med</span>
+            <span class="pill" onclick="filterLectures('Neuroscience', this)">Neuro</span>
+          </div>
+          <input type="text" id="lecture-search" class="search-input" placeholder="Search lectures by topic or instructor..." oninput="filterLecturesSearch(this.value)" style="min-width:240px;" />
+        </div>
+      `;
+
+      // Show admin-uploaded content section if any exist
+      if (adminUploads.length > 0) {
+        html += `<div style="margin-bottom:20px;"><h4 style="color:var(--ink); margin-bottom:10px; font-size:0.92rem;">📢 Recently Published by Faculty</h4>`;
+        adminUploads.forEach((item, idx) => {
+          const catIcons = { lecture: '📄', video: '🎥', exam: '📝', book: '📚' };
+          const catIcon = catIcons[item.category] || '📁';
+          html += `
+            <div class="file-item" style="margin-bottom:8px;">
+              <div class="file-left">
+                <div class="file-type-icon" style="font-size:1.1rem;">${catIcon}</div>
+                <div class="file-details">
+                  <span class="file-name">${item.title}</span>
+                  <span class="file-sub">👨‍🏫 ${item.instructor || 'Faculty'} · ${item.date} · <span style="text-transform:capitalize;">${item.category}</span></span>
+                </div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                ${item.fileData ? '<button class="btn btn-primary" style="padding:4px 12px; font-size:0.75rem;" onclick="downloadAdminLecture(' + idx + ')">📥 Download</button>' : ''}
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+
+      html += `<div class="video-grid" id="lectures-grid-container">`;
+
+      DUMMY_DATA.lectures.forEach(v => {
+        html += `
+          <div class="video-card" data-course="${v.course}" data-title="${v.title.toLowerCase()}" data-instructor="${v.instructor.toLowerCase()}">
+            <div class="video-thumb" style="background-image:url('${v.thumb}'); background-size:cover; background-position:center; cursor:pointer;" onclick="playVideoModal(${v.id})">
+              <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%);"></div>
+              <div class="play-icon" style="z-index:2;">▶</div>
+              <span class="video-duration" style="z-index:2;">⏱️ ${v.duration}</span>
+            </div>
+            <div class="video-info">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="badge badge-primary" style="font-size:0.68rem;">${v.course}</span>
+                <span style="font-size:0.68rem; color:var(--ink-soft);">${v.date}</span>
+              </div>
+              <h4 class="video-title" style="cursor:pointer;" onclick="playVideoModal(${v.id})">${v.title}</h4>
+              <span class="video-instructor">👨‍🏫 ${v.instructor}</span>
+              <p style="font-size:0.76rem; color:var(--ink-soft); line-height:1.4; margin-top:4px;">${v.desc}</p>
+              <div style="margin-top:auto; padding-top:10px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #f1f5f9; flex-wrap:wrap; gap:6px;">
+                <span style="font-size:0.7rem; color:var(--ink-soft);">👁️ ${v.views} views</span>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-outline" style="padding:4px 10px; font-size:0.72rem; border-color:rgba(43,76,140,0.25); color:var(--accent);" onclick="downloadLecturePdf(${v.id})">📄 Slides PDF</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+
+      // Student Upload Section
+      html += `
+        <div style="margin-top:24px; background:linear-gradient(135deg, rgba(43,76,140,0.04), rgba(196,148,58,0.04)); border:1px dashed var(--accent); padding:18px; border-radius:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h4 style="color:var(--accent); font-size:0.9rem; margin-bottom:4px;">📤 Upload Your Study Material</h4>
+              <p style="font-size:0.78rem; color:var(--ink-soft);">Share your notes, recordings, or study resources with classmates</p>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="file" id="student-lecture-upload" style="display:none;" onchange="handleStudentLectureUpload(event)" accept=".pdf,.doc,.docx,.mp4,.webm,.ppt,.pptx" />
+              <button class="btn btn-primary" style="font-size:0.8rem;" onclick="document.getElementById('student-lecture-upload').click()">📁 Choose File & Upload</button>
+            </div>
+          </div>
+          <div id="student-upload-status" style="display:none; margin-top:10px; padding:8px 12px; background:var(--success-bg); border-radius:8px; font-size:0.8rem; color:var(--success); font-weight:600;"></div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function downloadAdminLecture(index) {
+      let adminUploads = [];
+      try { adminUploads = JSON.parse(localStorage.getItem('portal_uploaded_lectures') || '[]'); } catch(e) {}
+      const item = adminUploads[index];
+      if (!item) return;
+
+      if (item.fileData && item.fileData !== 'large_file_reference') {
+        const a = document.createElement('a');
+        a.href = item.fileData;
+        a.download = item.fileName || 'downloaded_file';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        const content = `${'='.repeat(60)}\n     SUDAN HIGHER EDUCATION ACADEMIC PORTAL\n          COURSE MATERIAL DOWNLOAD\n${'='.repeat(60)}\n\nTitle:      ${item.title}\nCategory:   ${item.category}\nCollege:    ${item.college}\nInstructor: ${item.instructor || 'Not specified'}\nUploaded:   ${item.date}\nFile:       ${item.fileName || 'No file attached'}\n\n${'='.repeat(60)}\nGenerated via Association of Sudanese Universities Portal\n${'='.repeat(60)}`;
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (item.fileName || item.title.replace(/\s+/g, '_') + '.txt');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    async function handleStudentLectureUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const statusEl = document.getElementById('student-upload-status');
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.textContent = '⏳ Uploading...';
+      }
+
+      let fileData = null;
+      try {
+        if (file.size <= 2 * 1024 * 1024) {
+          fileData = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(file);
+          });
+        }
+      } catch (e) {}
+
+      const currentUser = (function(){
+        try { return JSON.parse(sessionStorage.getItem('portal_current_user') || 'null'); } catch(e) { return null; }
+      })();
+      const author = currentUser ? (currentUser.first_name + ' ' + (currentUser.last_name||'')).trim() : (DUMMY_DATA.results?.studentName || 'Current Student');
+
+      // Save to a shared-content store so other students could see it
+      let sharedContent = [];
+      try { sharedContent = JSON.parse(localStorage.getItem('portal_shared_student_content') || '[]'); } catch(e) {}
+
+      const newShare = {
+        id: Date.now(),
+        title: file.name.replace(/\.[^/.]+$/, ''),
+        author,
+        size: (file.size/1024/1024).toFixed(1) + ' MB',
+        format: file.name.split('.').pop().toUpperCase(),
+        downloads: 0,
+        rating: 'New',
+        cat: 'Student Upload',
+        fileData,
+        fileName: file.name,
+        university: uniId,
+        college: collegeId,
+        createdAt: new Date().toISOString()
+      };
+
+      sharedContent.unshift(newShare);
+      localStorage.setItem('portal_shared_student_content', JSON.stringify(sharedContent));
+
+      let synced = false;
+      const sClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
+      if (sClient && navigator.onLine) {
+        try {
+          const { data, error } = await sClient.from('student_shares').insert({
+            student_name: author,
+            file_name: file.name,
+            file_data: fileData,
+            file_size: (file.size/1024/1024).toFixed(1) + ' MB',
+            title: file.name.replace(/\.[^/.]+$/, ''),
+            university: uniId,
+            college: collegeId
+          }).select();
+          if (!error && data && data[0]) synced = true;
+        } catch (err) {
+          console.warn('Share upload to Supabase failed:', err.message);
+        }
+      }
+
+      if (!synced) {
+        // queue for offline sync
+        const storageKey = 'offline_share_' + Date.now();
+        try {
+          localStorage.setItem(storageKey, JSON.stringify({ ...newShare, sync_status: false }));
+        } catch (e) {}
+      }
+
+      // Add to shared content
+      DUMMY_DATA.sharing.unshift({
+        id: Date.now(),
+        title: newShare.title,
+        author,
+        size: newShare.size,
+        format: newShare.format,
+        downloads: 0,
+        rating: 'New',
+        cat: 'Student Upload'
+      });
+
+      if (statusEl) {
+        statusEl.textContent = `✓ "${file.name}" (${(file.size/1024/1024).toFixed(2)} MB) ${synced ? 'uploaded' : 'saved offline'} successfully! Your file has been shared with your classmates.`;
+      }
+    }
+
+    function filterLectures(course, el) {
+      document.querySelectorAll('#modal-body .pills-group .pill').forEach(p => p.classList.remove('active'));
+      if (el) el.classList.add('active');
+
+      const cards = document.querySelectorAll('#lectures-grid-container .video-card');
+      cards.forEach(c => {
+        if (course === 'All' || c.getAttribute('data-course').toLowerCase().includes(course.toLowerCase())) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    function filterLecturesSearch(query) {
+      const q = query.toLowerCase().trim();
+      const cards = document.querySelectorAll('#lectures-grid-container .video-card');
+      cards.forEach(c => {
+        const title = c.getAttribute('data-title');
+        const inst = c.getAttribute('data-instructor');
+        const course = c.getAttribute('data-course').toLowerCase();
+        if (!q || title.includes(q) || inst.includes(q) || course.includes(q)) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    function playVideoModal(lecId) {
+      const lec = DUMMY_DATA.lectures.find(l => l.id === lecId) || DUMMY_DATA.lectures[0];
+      const savedNote = localStorage.getItem(`portal_note_lec_${lec.id}`) || '';
+      const body = document.getElementById('modal-body');
+
+      body.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <!-- Real Embed Video Player -->
+          <div style="position:relative; width:100%; height:380px; background:#000; border-radius:16px; overflow:hidden; box-shadow:var(--shadow-md);">
+            <iframe 
+              src="${lec.videoUrl}?autoplay=1&rel=0&modestbranding=1" 
+              title="${lec.title}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen 
+              style="width:100%; height:100%; border:none; display:block;">
+            </iframe>
+          </div>
+
+          <!-- Video Details Header -->
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span class="badge badge-primary">${lec.course}</span>
+                <span class="badge badge-success">HD 1080p</span>
+                <span style="font-size:0.75rem; color:var(--ink-soft);">⏱️ ${lec.duration} · Recorded: ${lec.date}</span>
+              </div>
+              <h3 style="color:var(--ink); font-size:1.15rem; margin-bottom:2px;">${lec.title}</h3>
+              <p style="color:var(--accent); font-weight:600; font-size:0.85rem;">👨‍🏫 ${lec.instructor}</p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-outline" style="font-size:0.78rem;" onclick="downloadLecturePdf(${lec.id})">📥 Download PDF Handout</button>
+              <button class="btn btn-primary" style="font-size:0.78rem;" onclick="openModule('lectures')">← All Lectures</button>
+            </div>
+          </div>
+
+          <!-- Interactive Video Learning Tabs -->
+          <div style="background:#FDFCF7; border:1px solid var(--border); border-radius:14px; padding:18px;">
+            <h4 style="font-size:0.92rem; color:var(--ink); margin-bottom:10px;">📑 Key Curriculum Objectives & Chapters</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:8px; margin-bottom:14px;">
+              ${(function() {
+                let chHtml = '';
+                (lec.chapters || []).forEach(ch => {
+                  chHtml += '<div style="background:#fff; border:1px solid var(--border); padding:8px 12px; border-radius:8px; display:flex; align-items:center; gap:8px;">' +
+                    '<span class="badge badge-gold" style="font-size:0.68rem; font-weight:700;">' + ch.time + '</span>' +
+                    '<span style="font-size:0.78rem; color:var(--ink); font-weight:500;">' + ch.title + '</span>' +
+                  '</div>';
+                });
+                return chHtml;
+              })()}
+            </div>
+            
+            <p style="font-size:0.82rem; color:var(--ink-mid); line-height:1.5;">${lec.desc}</p>
+          </div>
+
+          <!-- Student Study Pad -->
+          <div style="background:#fff; border:1px solid var(--border); border-radius:14px; padding:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <label style="font-weight:600; font-size:0.84rem; color:var(--ink);">✍️ My Lecture Study Notes & Revision Pad</label>
+              <button type="button" class="btn btn-primary" style="padding:4px 12px; font-size:0.75rem;" onclick="saveLectureNotes(${lec.id})">💾 Save Notes</button>
+            </div>
+            <textarea id="lecture-note-area" placeholder="Write your clinical notes, key drug dosages, or anatomy landmarks here..." style="width:100%; height:75px; padding:10px; border-radius:8px; border:1px solid var(--border); font-family:inherit; font-size:0.82rem; resize:vertical;">${savedNote}</textarea>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveLectureNotes(lecId) {
+      const text = document.getElementById('lecture-note-area').value;
+      localStorage.setItem('portal_note_lec_' + lecId, text);
+      alert('Study notes saved successfully to your portal profile!');
+    }
+
+    function downloadLecturePdf(lecId) {
+      const lec = DUMMY_DATA.lectures.find(l => l.id === lecId) || DUMMY_DATA.lectures[0];
+      const chapterLines = (lec.chapters || []).map(c => '[' + c.time + '] - ' + c.title).join('\n');
+      const content = `
+========================================================================
+           SUDAN HIGHER EDUCATION ACADEMIC PORTAL
+                 OFFICIAL LECTURE TRANSCRIPT & NOTES
+========================================================================
+
+Course:        ${lec.course}
+Lecture Title: ${lec.title}
+Instructor:    ${lec.instructor}
+Date Recorded: ${lec.date}
+Duration:      ${lec.duration}
+
+------------------------------------------------------------------------
+SYLLABUS & OVERVIEW:
+------------------------------------------------------------------------
+${lec.desc}
+
+------------------------------------------------------------------------
+LECTURE CHAPTER BREAKDOWN:
+------------------------------------------------------------------------
+${chapterLines}
+
+------------------------------------------------------------------------
+HIGH-YIELD REVISION SUMMARY:
+------------------------------------------------------------------------
+1. Core definitions and pathophysiological mechanisms discussed.
+2. Clinical diagnostics and Sudanese Ministry of Health management protocols.
+3. Review questions for upcoming mid-semester and OSCE exams.
+
+========================================================================
+Generated via Association of Sudanese Universities Digital Portal
+========================================================================
+      `;
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = lec.pdf || 'Lecture_Notes.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // 3. RENDER SHARING CONTENT
+    function renderSharing(container) {
+      // Load any persisted student-shared content so it survives refresh
+      try {
+        const shared = JSON.parse(localStorage.getItem('portal_shared_student_content') || '[]');
+        if (shared && shared.length > 0) {
+          let found = false;
+          shared.forEach(s => {
+            if (!DUMMY_DATA.sharing.find(d => d.id === s.id)) {
+              DUMMY_DATA.sharing.unshift({ ...s, downloads: s.downloads || 0, rating: s.rating || 'New' });
+              found = true;
+            }
+          });
+        }
+      } catch(e) {}
+
+      let html = `
+        <div class="filter-bar">
+          <div class="pills-group">
+            <span class="pill active">All Uploads</span>
+            <span class="pill">Notes & Summaries</span>
+            <span class="pill">Past Papers</span>
+            <span class="pill">Clinical Guides</span>
+          </div>
+          <button class="btn btn-primary" onclick="showShareFileForm()">📤 Share New Document</button>
+        </div>
+        <div id="files-list-container">
+      `;
+
+      DUMMY_DATA.sharing.forEach(f => {
+        html += `
+          <div class="file-item">
+            <div class="file-left">
+              <div class="file-type-icon">${f.format}</div>
+              <div class="file-details">
+                <span class="file-name">${f.title}</span>
+                <span class="file-sub">Uploaded by <strong>${f.author}</strong> · ${f.size} · ⭐ ${f.rating}</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:0.76rem; color:var(--ink-soft);">📥 ${f.downloads} downloads</span>
+              <button class="btn btn-outline" style="padding:6px 14px; font-size:0.76rem;" onclick="alert('Downloading: ${f.title}')">Download</button>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function showShareFileForm() {
+      const container = document.getElementById('files-list-container');
+      container.insertAdjacentHTML('afterbegin', `
+        <div style="background:#FDFCF7; border:1px dashed var(--accent); padding:18px; border-radius:14px; margin-bottom:16px;">
+          <h4 style="margin-bottom:10px; color:var(--accent);">Share New Resource with College Students</h4>
+          <input type="text" id="share-title" placeholder="Document Title (e.g. Pathology OSCE Summary)" class="search-input" style="width:100%; margin-bottom:10px;" />
+          <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <select id="share-cat" class="search-input" style="flex:1;">
+              <option>Notes & Summaries</option>
+              <option>Past Papers</option>
+              <option>Clinical Guides</option>
+              <option>Lab Manuals</option>
+            </select>
+            <input type="file" class="search-input" style="flex:1;" />
+          </div>
+          <button class="btn btn-primary" onclick="addSharedFile()">Upload & Publish</button>
+        </div>
+      `);
+    }
+
+    function addSharedFile() {
+      const title = document.getElementById('share-title').value || 'Shared Student Study Note';
+      const cat = document.getElementById('share-cat')?.value || 'Notes & Summaries';
+
+      const currentUser = (function(){
+        try { return JSON.parse(sessionStorage.getItem('portal_current_user') || 'null'); } catch(e) { return null; }
+      })();
+      const author = currentUser ? (currentUser.first_name + ' ' + (currentUser.last_name||'')).trim() : 'Current Student (You)';
+
+      const entry = {
+        id: Date.now(),
+        title: title,
+        author: author,
+        size: '3.4 MB',
+        format: 'PDF',
+        downloads: 0,
+        rating: 'New',
+        cat: cat,
+        createdAt: new Date().toISOString()
+      };
+
+      DUMMY_DATA.sharing.unshift({ ...entry, downloads: 1, rating: '5.0/5' });
+
+      // Persist to localStorage so it survives refresh
+      let sharedContent = [];
+      try { sharedContent = JSON.parse(localStorage.getItem('portal_shared_student_content') || '[]'); } catch(e) {}
+      sharedContent.unshift(entry);
+      localStorage.setItem('portal_shared_student_content', JSON.stringify(sharedContent));
+
+      openModule('sharing');
+    }
+
+    // 4. RENDER UPLOADING FILES
+    function renderUploading(container) {
+      let html = `
+        <div style="background:linear-gradient(135deg, rgba(43,76,140,0.06), rgba(196,148,58,0.06)); padding:20px; border-radius:16px; border:1px solid var(--border); margin-bottom:20px;">
+          <h4 style="color:var(--accent); margin-bottom:6px;">Upload Assignment Submission</h4>
+          <p style="font-size:0.8rem; color:var(--ink-soft); margin-bottom:14px;">Select your PDF / Word document or drag and drop files below for faculty evaluation.</p>
+          
+          <input type="file" id="real-assignment-input" style="display:none;" onchange="handleRealFileSelected(event)" accept=".pdf,.doc,.docx,.ppt,.pptx" />
+          
+          <div style="border:2px dashed var(--accent); padding:26px; text-align:center; background:#fff; border-radius:14px; cursor:pointer; transition:all 0.2s;" onclick="document.getElementById('real-assignment-input').click()">
+            <div style="font-size:2.2rem; margin-bottom:6px;">📤</div>
+            <span style="font-size:0.88rem; font-weight:700; color:var(--ink);">Click to Choose File or Drop Document Here</span>
+            <p style="font-size:0.75rem; color:var(--ink-soft); margin-top:4px;">Supported formats: PDF, DOCX, PPTX (Max 50MB) · Direct upload to Department</p>
+          </div>
+          
+          <div id="upload-progress-bar" style="display:none; margin-top:14px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:4px;">
+              <span id="upload-filename">Uploading document...</span>
+              <span id="upload-percent">0%</span>
+            </div>
+            <div style="height:6px; background:rgba(0,0,0,0.08); border-radius:10px; overflow:hidden;">
+              <div id="upload-fill" style="width:0%; height:100%; background:var(--accent); transition:width 0.2s;"></div>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="margin-bottom:12px; color:var(--ink);">Course Assignments & Evaluation Status</h4>
+        <div id="uploads-roster-list">
+      `;
+
+      DUMMY_DATA.uploads.forEach(u => {
+        html += `
+          <div class="file-item">
+            <div class="file-left">
+              <div class="file-type-icon" style="background:${u.status==='Graded'?'#e8f5e9':u.status==='Submitted'?'rgba(43,76,140,0.1)':'#fff4e5'}; color:${u.status==='Graded'?'var(--success)':u.status==='Submitted'?'var(--accent)':'var(--warning)'};">
+                ${u.status==='Graded'?'✓':u.status==='Submitted'?'📄':'⏳'}
+              </div>
+              <div class="file-details">
+                <span class="file-name">${u.title}</span>
+                <span class="file-sub">Course: <strong>${u.course}</strong> · Deadline: <strong>${u.due}</strong></span>
+                <span style="font-size:0.74rem; color:var(--ink-soft); margin-top:2px;">Notice: ${u.feedback}</span>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <span class="badge ${u.status==='Graded'?'badge-success':u.status==='Submitted'?'badge-primary':'badge-warning'}">${u.status}</span>
+              <div style="font-size:0.82rem; font-weight:700; color:var(--accent); margin-top:4px;">Grade: ${u.grade}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    async function handleRealFileSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const progressBar = document.getElementById('upload-progress-bar');
+      const filenameEl = document.getElementById('upload-filename');
+      const fill = document.getElementById('upload-fill');
+      const percent = document.getElementById('upload-percent');
+      const submitBtn = document.getElementById('assign-submit-btn');
+
+      if (progressBar) progressBar.style.display = 'block';
+      if (filenameEl) filenameEl.textContent = `Uploading: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)...`;
+      if (submitBtn) submitBtn.disabled = true;
+
+      const currentUser = (function(){
+        try { return JSON.parse(sessionStorage.getItem('portal_current_user') || 'null'); } catch(e) { return null; }
+      })();
+
+      const studentName = currentUser ? (currentUser.first_name + ' ' + (currentUser.last_name||'')).trim() : (DUMMY_DATA.results?.studentName || 'Student');
+      const studentEmail = currentUser?.email || '';
+
+      // Read the file as base64 (cap at 2MB for localStorage/offline storage safety)
+      let fileData = null;
+      let offline = false;
+
+      try {
+        if (file.size <= 2 * 1024 * 1024) {
+          fileData = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(file);
+          });
+        }
+      } catch (e) {}
+
+      const submission = {
+        studentName,
+        studentEmail,
+        studentId: currentUser?.id || '',
+        fileName: file.name,
+        fileData,
+        fileSize: (file.size/1024/1024).toFixed(2) + ' MB',
+        course: 'Current Enrolled Course',
+        university: uniId,
+        college: collegeId
+      };
+
+      let progress = 0;
+      const interval = setInterval(async () => {
+        progress += 20;
+        if (fill) fill.style.width = progress + '%';
+        if (percent) percent.textContent = progress + '%';
+
+        if (progress >= 100) {
+          clearInterval(interval);
+
+          let uploadedToServer = false;
+          if (navigator.onLine) {
+            try {
+              const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+              if (client) {
+                const { data, error } = await client.from('student_submissions').insert({
+                  student_name: studentName,
+                  student_email: studentEmail,
+                  student_id: currentUser?.id || '',
+                  file_name: file.name,
+                  file_data: fileData,
+                  file_size: (file.size/1024/1024).toFixed(2) + ' MB',
+                  course: 'Current Enrolled Course',
+                  status: 'Submitted',
+                  university: uniId,
+                  college: collegeId
+                }).select();
+
+                if (!error && data && data[0]) {
+                  uploadedToServer = true;
+                }
+              }
+            } catch (err) {
+              console.warn('Direct Supabase upload failed:', err.message);
+            }
+
+            if (!uploadedToServer) {
+              try {
+                const response = await fetch('/.netlify/functions/upload-assignment', {
+                  method: 'POST',
+                  body: JSON.stringify(submission),
+                  headers: { 'Content-Type': 'application/json' }
+                });
+                if (response.ok) uploadedToServer = true;
+              } catch (err) {
+                console.warn('Netlify upload-assignment failed:', err.message);
+              }
+            }
+          }
+
+          if (!uploadedToServer) {
+            // Offline: save to localStorage queue for later sync
+            offline = true;
+            const storageKey = 'offline_assignment_' + ((currentUser?.id) || studentEmail || 'student_' + Date.now());
+            const pendingObj = { ...submission, sync_status: false, saved_at: new Date().toISOString() };
+            try {
+              localStorage.setItem(storageKey, JSON.stringify(pendingObj));
+            } catch (e) {
+              // Storage full — retry without file data
+              pendingObj.fileData = null;
+              try { localStorage.setItem(storageKey, JSON.stringify(pendingObj)); } catch (e2) {}
+            }
+          }
+
+          setTimeout(() => {
+            DUMMY_DATA.uploads.unshift({
+              id: Date.now(),
+              title: file.name.replace(/\.[^/.]+$/, "") + " (Student Submission)",
+              course: 'Current Enrolled Course',
+              due: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+              status: 'Submitted',
+              grade: 'Under Review',
+              feedback: `Successfully received on ${new Date().toLocaleTimeString()} by Academic Department.` + (offline ? ' (Saved offline — will sync when online.)' : '')
+            });
+            openModule('uploading');
+            alert(`Assignment ${offline ? 'Saved Offline' : 'Successfully Submitted'}!\n\nFile "${file.name}" has been ${offline ? 'queued for upload (you are offline). It will be synced automatically when your connection returns.' : 'uploaded to the university portal department under ' + studentName + '.'}`);
+          }, 350);
+        }
+      }, 150);
+    }
+
+    // 5. RENDER ASSIGNMENTS & EXAMS (reads live from localStorage)
+    function renderExams(container) {
+      // Re-read from localStorage in case admin updated since page load
+      let examsToRender = DUMMY_DATA.exams;
+      try {
+        const cached = JSON.parse(localStorage.getItem('portal_exam_schedule') || 'null');
+        if (cached && cached.length > 0) {
+          examsToRender = cached.map((item, idx) => ({
+            id: item.id || idx + 1,
+            title: item.title,
+            type: item.type,
+            date: item.date ? new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : (item.limit || ''),
+            time: item.time ? (function(t) { const [h,m] = t.split(':').map(Number); const s = h>=12?'PM':'AM'; return `${(h%12||12).toString().padStart(2,'0')}:${m.toString().padStart(2,'0')} ${s}`; })(item.time) : (item.status === 'Completed' ? 'Completed' : ''),
+            venue: item.venue || '',
+            weight: item.weight || '',
+            limit: item.limit || '',
+            status: item.status,
+            score: item.status === 'Completed' ? (item.score || '') : '',
+            isQuiz: item.type === 'Active Online Quiz' && item.status === 'OPEN NOW'
+          }));
+        }
+      } catch(e) {}
+
+      let html = `<div style="display:flex; flex-direction:column; gap:12px;">`;
+
+      examsToRender.forEach(ex => {
+        const leftBorder = ex.isQuiz ? 'var(--accent-warm)' : ex.status === 'Completed' ? 'var(--success)' : 'var(--accent)';
+        const badgeType = ex.isQuiz ? 'badge-gold' : ex.status === 'Completed' ? 'badge-success' : 'badge-primary';
+        const actionBtn = ex.isQuiz ? '<button class="btn btn-primary" onclick="startQuickQuiz()">✍️ Take Quiz Now</button>' : '<span class="badge ' + (ex.status==='Completed'?'badge-success':'badge-primary') + '">' + ex.status + '</span>';
+        const metaText = (ex.venue ? '📍 ' + ex.venue + ' · ' : '') + (ex.weight ? '⚖️ Weight: ' + ex.weight : ex.score ? '🎯 Result: ' + ex.score : '');
+
+        html += '<div class="exam-card" style="border-left-color:' + leftBorder + '">' +
+          '<div>' +
+            '<div style="display:flex; gap:8px; align-items:center; margin-bottom:4px;">' +
+              '<span class="badge ' + badgeType + '">' + ex.type + '</span>' +
+              '<span style="font-size:0.75rem; color:var(--ink-soft);">' + (ex.date || ex.limit) + '</span>' +
+            '</div>' +
+            '<h4 style="font-size:0.92rem; color:var(--ink);">' + ex.title + '</h4>' +
+            '<p style="font-size:0.78rem; color:var(--ink-soft); margin-top:2px;">' + metaText + '</p>' +
+          '</div>' +
+          '<div>' + actionBtn + '</div>' +
+        '</div>';
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    // 6. RENDER RESULTS AND REPORTS
+    function renderResults(container) {
+      const localUser = JSON.parse(sessionStorage.getItem('portal_current_user') || 'null');
+      let activeName = DUMMY_DATA.results.studentName;
+      let activeId = DUMMY_DATA.results.studentId;
+
+      if (localUser && (localUser.first_name || localUser.name)) {
+        activeName = `${localUser.first_name || ''} ${localUser.last_name || ''}`.trim() || localUser.name;
+        if (localUser.id) activeId = localUser.id.replace('loc_', 'STU-');
+      }
+
+      DUMMY_DATA.results.studentName = activeName;
+      DUMMY_DATA.results.studentId = activeId;
+      const res = DUMMY_DATA.results;
+
+      let rowsHtml = '';
+      res.courses.forEach(c => {
+        const badgeClass = c.grade.startsWith('A') ? 'badge-success' : c.grade.startsWith('B') ? 'badge-primary' : 'badge-warning';
+        rowsHtml += '<tr>' +
+          '<td><strong>' + c.code + '</strong> - ' + c.name + '</td>' +
+          '<td>' + c.credits + '</td>' +
+          '<td><strong>' + c.score + '</strong></td>' +
+          '<td><span class="badge ' + badgeClass + '">' + c.grade + '</span></td>' +
+          '<td><strong>' + c.points.toFixed(1) + '</strong></td>' +
+          '<td><span style="color:var(--success); font-size:0.78rem; font-weight:600;">✓ Passed</span></td>' +
+        '</tr>';
+      });
+
+      let html = `
+        <!-- Student Header -->
+        <div class="report-header">
+          <div>
+            <h3 style="color:var(--ink); font-size:1.3rem;">${res.studentName}</h3>
+            <p style="font-size:0.82rem; color:var(--ink-soft); margin-top:2px;">Student ID: <strong style="color:var(--accent);">${res.studentId}</strong> · ${res.program}</p>
+            <p style="font-size:0.78rem; color:var(--ink-soft); margin-top:2px;">Completed Credits: <strong>${res.completedCredits}</strong> · Attendance: <strong>${res.attendance}</strong> · <span class="badge badge-success" style="font-size:0.68rem;">${res.honor || 'Dean\'s List'}</span></p>
+          </div>
+          <div class="gpa-box">
+            <div class="gpa-num">${res.gpa}</div>
+            <div class="gpa-lbl">Cumulative GPA</div>
+          </div>
+        </div>
+
+        <!-- ID Search Bar for Custom Records -->
+        <div style="background:#FDFCF7; border:1px solid var(--border); padding:14px 18px; border-radius:14px; margin-bottom:18px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <span style="font-size:0.82rem; font-weight:600; color:var(--ink);">🔍 Query Student Examination Roster:</span>
+          <input type="text" id="result-query-input" class="search-input" placeholder="Enter Student ID (e.g. 2023-UD-884 or STU-101)..." style="flex:1; min-width:200px;" />
+          <button class="btn btn-primary" style="padding:6px 16px; font-size:0.8rem;" onclick="searchStudentResultRecord()">Search Result</button>
+        </div>
+
+        <div id="custom-search-result-box" style="display:none; margin-bottom:16px;"></div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h4 style="color:var(--ink); font-size:0.95rem;">Official Semester Transcript & Grade Breakdown</h4>
+          <button class="btn btn-outline" style="font-size:0.78rem; border-color:var(--accent); color:var(--accent);" onclick="generateTranscriptPrint()">🖨️ Print Official Transcript</button>
+        </div>
+
+        <table class="grade-table">
+          <thead>
+            <tr>
+              <th>Course Code & Title</th>
+              <th>Credits</th>
+              <th>Percentage</th>
+              <th>Grade</th>
+              <th>Grade Points</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="transcript-table-body">
+            ${rowsHtml}
+          </tbody>
+        </table>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function searchStudentResultRecord() {
+      const q = document.getElementById('result-query-input').value.trim().toLowerCase();
+      const resultBox = document.getElementById('custom-search-result-box');
+      if (!q) {
+        resultBox.style.display = 'none';
+        return;
+      }
+
+      // Check stored student results
+      const storedResults = JSON.parse(localStorage.getItem('portal_student_results') || '[]');
+      const found = storedResults.filter(r => 
+        (r.id && r.id.toLowerCase().includes(q)) || 
+        (r.name && r.name.toLowerCase().includes(q)) ||
+        (r.subject && r.subject.toLowerCase().includes(q))
+      );
+
+      if (found.length > 0) {
+        let itemsHtml = '';
+        found.forEach(f => {
+          const stClass = f.status === 'Passed' ? 'badge-success' : f.status === 'Addendum' ? 'badge-warning' : 'badge-primary';
+          itemsHtml += '<div style="background:#fff; border:1px solid #d0e1fd; padding:10px 14px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">' +
+            '<div>' +
+              '<strong>' + f.name + '</strong> (' + f.id + ') — <span style="text-transform:capitalize;">' + f.college + ' Faculty</span>' +
+              '<div style="font-size:0.76rem; color:var(--ink-soft);">' + f.subject + ' · Score: <strong>' + f.score + '%</strong> (' + f.grade + ')</div>' +
+            '</div>' +
+            '<div>' +
+              '<span class="badge ' + stClass + '">' + f.status + '</span>' +
+            '</div>' +
+          '</div>';
+        });
+
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = '<div style="background:#eef6ff; border:1px solid rgba(43,76,140,0.3); border-radius:12px; padding:14px;">' +
+          '<div style="font-weight:700; color:var(--accent); margin-bottom:8px;">✓ Found ' + found.length + ' Verified Examination Record(s):</div>' +
+          itemsHtml +
+        '</div>';
+      } else {
+        resultBox.style.display = 'block';
+        resultBox.innerHTML = '<div style="background:#fff4e5; border:1px solid #ffd599; border-radius:12px; padding:12px; color:#8a5300; font-size:0.82rem;">' +
+          '⚠️ No specific examination addendum record found matching "<strong>' + q + '</strong>". Displaying standard semester roster.' +
+        '</div>';
+      }
+    }
+
+    function generateTranscriptPrint() {
+      const res = DUMMY_DATA.results;
+      const uniTitle = document.getElementById('dash-uni-en')?.textContent || 'Dongola University';
+      const body = document.getElementById('modal-body');
+
+      let tableRows = '';
+      res.courses.forEach(c => {
+        tableRows += '<tr>' +
+          '<td>' + c.code + '</td>' +
+          '<td>' + c.name + '</td>' +
+          '<td>' + c.credits + '</td>' +
+          '<td>' + c.score + '</td>' +
+          '<td>' + c.grade + '</td>' +
+          '<td>' + c.points.toFixed(1) + '</td>' +
+        '</tr>';
+      });
+
+      body.innerHTML = `
+        <div style="background:#fff; padding:24px; border-radius:16px; border:1px solid var(--border); font-family:'Times New Roman', serif;">
+          <div style="text-align:center; border-bottom:2px solid #2b4c8c; padding-bottom:14px; margin-bottom:16px;">
+            <div style="font-size:0.75rem; color:#555; letter-spacing:0.05em;">REPUBLIC OF SUDAN · MINISTRY OF HIGHER EDUCATION & SCIENTIFIC RESEARCH</div>
+            <h2 style="color:#2b4c8c; margin:4px 0; font-size:1.4rem;">${uniTitle}</h2>
+            <div style="font-weight:bold; font-size:0.95rem; color:#333;">OFFICIAL ACADEMIC TRANSCRIPT OF RECORDS</div>
+          </div>
+
+          <table style="width:100%; margin-bottom:16px; font-size:0.88rem; border-collapse:collapse;">
+            <tr>
+              <td style="padding:4px 8px;"><strong>Student Name:</strong> ${res.studentName}</td>
+              <td style="padding:4px 8px;"><strong>Student ID:</strong> ${res.studentId}</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 8px;"><strong>Degree Program:</strong> ${res.program}</td>
+              <td style="padding:4px 8px;"><strong>Cumulative GPA:</strong> ${res.gpa} / 4.00</td>
+            </tr>
+            <tr>
+              <td style="padding:4px 8px;"><strong>Credits Completed:</strong> ${res.completedCredits}</td>
+              <td style="padding:4px 8px;"><strong>Status:</strong> Good Standing · ${res.honor || 'Honors List'}</td>
+            </tr>
+          </table>
+
+          <table class="grade-table" style="width:100%; margin-bottom:24px;">
+            <thead>
+              <tr>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th>Credits</th>
+                <th>Percentage</th>
+                <th>Grade</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+
+          <div style="display:flex; justify-content:space-between; margin-top:30px; font-size:0.82rem; text-align:center;">
+            <div style="border-top:1px solid #555; width:180px; padding-top:4px;">Dean of Academic Affairs</div>
+            <div style="border-top:1px solid #555; width:180px; padding-top:4px;">Registrar & Exam Office</div>
+            <div style="border-top:1px solid #555; width:180px; padding-top:4px;">Official Seal of University</div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px; border-top:1px solid #eee; padding-top:14px;">
+            <button class="btn btn-outline" onclick="openModule('results')">← Back to Results</button>
+            <button class="btn btn-primary" onclick="window.print()">🖨️ Send to Printer</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 7. RENDER ELECTRONIC LIBRARY
+    function renderLibrary(container) {
+      let gridHtml = '';
+      DUMMY_DATA.library.forEach(b => {
+        gridHtml += '<div class="book-card" onclick="openBookReader(\'' + b.title.replace(/'/g, "\\'") + '\', \'' + b.author.replace(/'/g, "\\'") + '\')">' +
+          '<div class="book-cover">' +
+            '<span class="badge badge-gold" style="align-self:flex-start; font-size:0.65rem;">' + b.cat + '</span>' +
+            '<div class="book-cover-title">' + b.title + '</div>' +
+            '<div class="book-author">' + b.author + '</div>' +
+          '</div>' +
+          '<div class="book-body">' +
+            '<span class="book-meta">📄 ' + b.pages + '</span>' +
+            '<span class="book-meta">🔢 ' + b.isbn + '</span>' +
+            '<button class="btn btn-outline" style="padding:4px 8px; font-size:0.72rem; margin-top:6px; width:100%; justify-content:center;">Read E-Book</button>' +
+          '</div>' +
+        '</div>';
+      });
+
+      container.innerHTML = `
+        <div class="filter-bar">
+          <div class="pills-group">
+            <span class="pill active">All Categories</span>
+            <span class="pill">Textbooks</span>
+            <span class="pill">Atlases</span>
+            <span class="pill">Journals</span>
+            <span class="pill">Nursing</span>
+          </div>
+          <input type="text" class="search-input" placeholder="Search books by title, author..." />
+        </div>
+        <div class="book-grid">
+          ${gridHtml}
+        </div>
+      `;
+    }
+
+    function openBookReader(title, author) {
+      const body = document.getElementById('modal-body');
+      body.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:12px 18px; border-radius:12px;">
+            <div>
+              <h4 style="color:var(--ink);">${title}</h4>
+              <p style="font-size:0.78rem; color:var(--ink-soft);">Author: ${author} · Dongola University Digital Library</p>
+            </div>
+            <button class="btn btn-outline" onclick="openModule('library')">← Exit Reader</button>
+          </div>
+          <div style="background:#fff; border:1px solid var(--border); padding:30px; border-radius:16px; min-height:300px; font-family:'Cormorant Garamond', serif; font-size:1.1rem; line-height:1.8; color:#2c2c2c;">
+            <h3 style="font-family:'Inter', sans-serif; font-size:1.2rem; color:var(--accent); margin-bottom:12px;">Chapter 1: Principles of Clinical Practice</h3>
+            <p>Medical practice requires a synthesis of detailed clinical knowledge, systematic physical assessment, and empathetic patient engagement. In emergency and primary care settings across Sudan, clinical diagnostics rely heavily on fundamental anatomical orientation...</p>
+            <p style="margin-top:14px;">The circulatory pathways ensure cellular oxygenation and metabolic homeostasis. Understanding systemic vascular resistance and cardiac output parameters is critical during critical care monitoring.</p>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.8rem; color:var(--ink-soft);">Page 1 of 412</span>
+            <button class="btn btn-primary" onclick="alert('Downloading full e-book PDF: ' + ${JSON.stringify(title)})">📥 Download Full E-Book PDF</button>
+          </div>
+        </div>
+      `;
+    }
+    // ── Offline Auto-Sync ──
+    function getPendingOfflineAssignments() {
+      const pending = [];
+      const re = /^offline_assignment_/;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && re.test(key)) {
+          try {
+            const val = JSON.parse(localStorage.getItem(key));
+            pending.push({ key, val });
+          } catch (e) {}
+        }
+      }
+      return pending;
+    }
+
+    function getPendingOfflineShares() {
+      const pending = [];
+      const re = /^offline_share_/;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && re.test(key)) {
+          try {
+            const val = JSON.parse(localStorage.getItem(key));
+            pending.push({ key, val });
+          } catch (e) {}
+        }
+      }
+      return pending;
+    }
+
+    window.addEventListener('online', async () => {
+      console.log("تمت استعادة الاتصال بالإنترنت بنجاح. بدء المزامنة التلقائية...");
+
+      let syncedCount = 0;
+
+      // Sync pending offline assignment submissions
+      const pendingAssignments = getPendingOfflineAssignments();
+      for (const { key, val } of pendingAssignments) {
+        try {
+          const { studentName, studentEmail, studentId, fileName, fileData, fileSize, course, university, college } = val;
+          const response = await fetch('/.netlify/functions/upload-assignment', {
+            method: 'POST',
+            body: JSON.stringify({
+              studentName, studentEmail, studentId, fileName, fileData, fileSize, course, university, college
+            }),
+            headers: { 'Content-Type': 'application/json' }
+          });
+          if (response.ok) {
+            localStorage.removeItem(key);
+            syncedCount++;
+          }
+        } catch (err) {
+          console.warn('Offline assignment sync failed:', err.message);
+        }
+      }
+
+      // Sync pending offline shares
+      const sharesClient = window.getSupabaseClient ? window.getSupabaseClient() : null;
+      const pendingShares = getPendingOfflineShares();
+      for (const { key, val } of pendingShares) {
+        try {
+          let deleted = false;
+          if (sharesClient) {
+            const { error } = await sharesClient.from('student_shares').insert({
+              student_name: val.author || 'Student',
+              file_name: val.fileName || val.title,
+              file_data: val.fileData || null,
+              file_size: val.size || '',
+              title: val.title || '',
+              university: val.university || uniId,
+              college: val.college || collegeId
+            });
+            if (!error) deleted = true;
+          }
+          if (deleted) {
+            localStorage.removeItem(key);
+            syncedCount++;
+          }
+        } catch (err) {
+          console.warn('Offline share sync failed:', err.message);
+        }
+      }
+
+      if (syncedCount > 0) {
+        alert(`رائع! عاد الإنترنت وتمت مزامنة ${syncedCount} عنصر/عناصر بنجاح. / ${syncedCount} offline item(s) synced to the cloud successfully.`);
+      }
+    });
+  </script>
+  <style>
+    .nav-lang span { cursor: pointer; opacity: 0.7; transition: opacity 0.2s, font-weight 0.2s; }
+    .nav-lang span:hover, .nav-lang span.active { opacity: 1; font-weight: 700; color: var(--accent); }
+  </style>
+</body>
+</html>

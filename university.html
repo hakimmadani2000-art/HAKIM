@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>University – Sudan Educational Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Inter:wght@300;400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --bg:           #F7F5F0;
+      --bg-card:      #FFFFFF;
+      --ink:          #1A1814;
+      --ink-mid:      #3D3A34;
+      --ink-soft:     #7A756A;
+      --accent:       #2B4C8C;
+      --accent-warm:  #C4943A;
+      --border:       rgba(26,24,20,0.09);
+      --shadow-sm:    0 1px 4px rgba(26,24,20,0.06), 0 4px 16px rgba(26,24,20,0.04);
+      --shadow-md:    0 8px 32px rgba(26,24,20,0.09), 0 2px 8px rgba(26,24,20,0.05);
+      --shadow-hover: 0 20px 60px rgba(43,76,140,0.13), 0 4px 16px rgba(43,76,140,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content:'';
+      position:fixed; inset:0;
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(196,148,58,0.06) 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(43,76,140,0.05) 0%, transparent 45%),
+        linear-gradient(rgba(26,24,20,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,24,20,0.018) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 56px 56px, 56px 56px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      position:fixed; top:0; left:0; right:0; height:3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-warm) 50%, var(--accent) 100%);
+      z-index:100;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position:sticky; top:3px; z-index:90;
+      height:56px; padding:0 48px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(247,245,240,0.92);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-left { display:flex; align-items:center; gap:18px; min-width:0; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      font-size:0.72rem; font-weight:600;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--ink-soft); border:none; background:none;
+      cursor:pointer; text-decoration:none;
+      transition:color 0.2s;
+      flex-shrink:0;
+    }
+    .back-btn:hover { color:var(--accent); }
+    .nav-divider { width:1px; height:16px; background:var(--border); flex-shrink:0; }
+    .nav-title { font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-mid); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+    .nav-right { display:flex; align-items:center; gap:8px; font-size:0.68rem; color:var(--ink-soft); flex-shrink:0; }
+
+    /* ── Page ── */
+    .page {
+      position:relative; z-index:1;
+      max-width:1000px; margin:0 auto;
+      padding:52px 64px 120px;
+    }
+
+    /* ── Hero block ── */
+    .hero {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:0;
+      text-align:center;
+      margin-bottom:56px;
+      opacity:0; animation:fadeUp 0.7s 0.05s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:10px;
+      margin-bottom:18px;
+    }
+    .eyebrow-line { width:28px; height:1.5px; background:var(--accent-warm); }
+    .eyebrow-text { font-size:0.66rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-warm); }
+
+    /* Logo circle */
+    .uni-logo-hero {
+      width:130px; height:130px;
+      border-radius:50%;
+      background: #FFFFFF;
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Cormorant Garamond', serif;
+      font-size:2.8rem; font-weight:700;
+      color:#fff;
+      margin-bottom:28px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 0 0 8px rgba(43,76,140,0.06), 0 0 0 16px rgba(43,76,140,0.03);
+      flex-shrink:0;
+    }
+
+    .uni-name-ar {
+      font-family:'Amiri', serif;
+      font-size:clamp(1.4rem, 3vw, 2rem);
+      font-weight:700;
+      color:var(--ink);
+      direction:rtl;
+      margin-bottom:6px;
+    }
+
+    .uni-name-en {
+      font-family:'Cormorant Garamond', serif;
+      font-size:clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight:600;
+      color:var(--ink);
+      margin-bottom:16px;
+    }
+
+    .hero-rule {
+      width:60px; height:2px;
+      background:linear-gradient(90deg, var(--accent), var(--accent-warm));
+      border-radius:2px;
+      margin:0 auto;
+    }
+
+    /* ── Description block ── */
+    .desc-block {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:40px;
+      padding:40px;
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow-sm);
+      margin-bottom:52px;
+      opacity:0; animation:fadeUp 0.7s 0.15s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .desc-en {
+      font-size:0.93rem;
+      line-height:1.85;
+      color:var(--ink-mid);
+      font-weight:400;
+    }
+
+    .desc-ar {
+      font-family:'Amiri', serif;
+      font-size:1.05rem;
+      line-height:1.9;
+      color:var(--ink-mid);
+      direction:rtl;
+      text-align:right;
+    }
+
+    /* ── College section ── */
+    .colleges-section {
+      opacity:0; animation:fadeUp 0.7s 0.25s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    .colleges-header {
+      text-align:center;
+      margin-bottom:32px;
+    }
+
+    .colleges-title-en {
+      font-family:'Cormorant Garamond', serif;
+      font-size:clamp(1.1rem, 2vw, 1.5rem);
+      font-weight:600;
+      color:var(--ink);
+      margin-bottom:6px;
+    }
+
+    .colleges-title-ar {
+      font-family:'Amiri', serif;
+      font-size:1.05rem;
+      color:var(--ink-soft);
+      direction:rtl;
+    }
+
+    .colleges-rule {
+      width:100%; height:1px;
+      background:linear-gradient(90deg, transparent, var(--border), transparent);
+      margin:20px 0;
+    }
+
+    /* ── College cards grid ── */
+    .colleges-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .college-card {
+      display:flex;
+      align-items:center;
+      gap:18px;
+      padding:22px 24px;
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      cursor:pointer;
+      text-decoration:none;
+      box-shadow:var(--shadow-sm);
+      transition:
+        transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* Slide-in top stripe */
+    .college-card::before {
+      content:'';
+      position:absolute; top:0; left:0; right:0; height:3px;
+      background:linear-gradient(90deg, var(--accent), var(--accent-warm));
+      transform:scaleX(0); transform-origin:left;
+      transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    }
+    .college-card:hover::before { transform:scaleX(1); }
+
+    .college-card:hover {
+      transform:translateY(-5px);
+      box-shadow:var(--shadow-hover);
+      border-color:rgba(43,76,140,0.2);
+    }
+
+    .college-card:active { transform:translateY(-2px); }
+
+    /* Icon circle */
+    .college-icon {
+      width:52px; height:52px; flex-shrink:0;
+      border-radius:14px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem;
+      transition:transform 0.3s ease;
+    }
+    .college-card:hover .college-icon { transform:scale(1.08); }
+
+    .college-text { flex:1; min-width:0; }
+
+    .college-name-en {
+      font-size:0.84rem; font-weight:600;
+      color:var(--ink); line-height:1.3;
+      margin-bottom:4px;
+    }
+
+    .college-name-ar {
+      font-family:'Amiri', serif;
+      font-size:0.9rem; font-weight:400;
+      color:var(--ink-soft); direction:rtl;
+      line-height:1.4;
+    }
+
+    .college-arrow {
+      color:var(--ink-soft);
+      transition:transform 0.25s ease, color 0.25s;
+      flex-shrink:0;
+    }
+    .college-card:hover .college-arrow {
+      transform:translateX(4px);
+      color:var(--accent);
+    }
+
+    /* ── Bottom strip ── */
+    .info-strip {
+      position:fixed; bottom:0; left:0; right:0; z-index:90;
+      padding:14px 48px;
+      display:flex; align-items:center; justify-content:space-between;
+      background:rgba(247,245,240,0.92);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border-top:1px solid var(--border);
+    }
+    .strip-left { display:flex; align-items:center; gap:10px; }
+    .strip-dot {
+      width:6px; height:6px; border-radius:50%;
+      background:#3abe78; box-shadow:0 0 0 3px rgba(58,190,120,0.2);
+      animation:blink 2.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .strip-status { font-size:0.68rem; font-weight:500; letter-spacing:0.07em; color:var(--ink-soft); }
+    .strip-right { font-size:0.65rem; color:var(--ink-soft); opacity:0.7; letter-spacing:0.05em; }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(22px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width:768px) {
+      .page { padding:36px 20px 90px; }
+      .nav { padding:0 20px; }
+      .desc-block { grid-template-columns:1fr; gap:24px; padding:24px; }
+      .colleges-grid { grid-template-columns:1fr; }
+      .info-strip { padding:10px 20px; }
+      .strip-right { display:none; }
+      .uni-logo-hero { width:100px; height:100px; font-size:2rem; }
+    }
+
+    @media (max-width:480px) {
+      .page { padding:28px 16px 80px; }
+      .desc-block { padding:18px; gap:18px; }
+      .college-card { padding:16px 18px; gap:12px; }
+      .college-icon { width:44px; height:44px; font-size:1.2rem; border-radius:12px; }
+      .college-name-en { font-size:0.8rem; }
+      .college-name-ar { font-size:0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar"></div>
+
+  <nav class="nav">
+    <div class="nav-left">
+      <a href="universities.html" class="back-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-en="Universities" data-ar="الجامعات">Universities</span>
+      </a>
+      <div class="nav-divider"></div>
+      <span class="nav-title" id="nav-uni-name">—</span>
+    </div>
+    <div class="nav-right nav-lang">
+      <span class="lang-en active">EN</span>
+      <div style="width:1px;height:12px;background:var(--border)"></div>
+      <span class="lang-ar">عربي</span>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- Hero -->
+    <div class="hero" id="hero-block">
+      <div class="eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text" id="hero-region">Sudan · Higher Education</span>
+        <div class="eyebrow-line"></div>
+      </div>
+
+      <div class="uni-logo-hero" id="hero-logo-wrap" style="overflow:hidden;background:#fff;border:1.5px solid var(--border);">
+        <img id="hero-logo-img" src="" alt="University Logo" style="width:100%;height:100%;object-fit:contain;padding:8px;display:block;" onerror="this.style.display='none';document.getElementById('hero-logo').style.display='flex';" />
+        <div id="hero-logo" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:700;color:#fff;">UK</div>
+      </div>
+
+      <p class="uni-name-ar" id="hero-name-ar"></p>
+      <h1 class="uni-name-en" id="hero-name-en"></h1>
+      <div class="hero-rule"></div>
+    </div>
+
+    <!-- Description -->
+    <div class="desc-block">
+      <p class="desc-en" id="desc-en"></p>
+      <p class="desc-ar" id="desc-ar"></p>
+    </div>
+
+    <!-- Colleges -->
+    <div class="colleges-section">
+      <div class="colleges-header">
+        <p class="colleges-title-en">To register or log in to your account, select your college from below.</p>
+        <p class="colleges-title-ar">للتسجيل أو الدخول لحسابك ، اختر الكلية من الكليات أدناه</p>
+        <div class="colleges-rule"></div>
+      </div>
+
+      <div class="colleges-grid" id="colleges-grid">
+        <!-- injected by JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info-strip">
+    <div class="strip-left">
+      <div class="strip-dot"></div>
+      <span class="strip-status" data-en="Portal Active · Academic Year 2025–2026" data-ar="البوابة نشطة · العام الدراسي 2025-2026">Portal Active · Academic Year 2025–2026</span>
+    </div>
+    <span class="strip-right" data-en="Ministry of Higher Education & Scientific Research · Sudan" data-ar="وزارة التعليم العالي والبحث العلمي · السودان">Ministry of Higher Education &amp; Scientific Research · Sudan</span>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script>
+    const universities = {
+      khartoum: {
+        en: 'University of Khartoum',
+        ar: 'جامعة الخرطوم',
+        initials: 'UK',
+        color: ['#1a3a6b','#2b5cbf'],
+        region: 'Khartoum State',
+        descEn: 'The University of Khartoum is the oldest and most prestigious university in Sudan, established in 1902 as the Khartoum Teaching Hospital. It has grown into a comprehensive research university offering programmes across medicine, engineering, law, and the sciences, serving as the intellectual cornerstone of Sudanese higher education.',
+        descAr: 'جامعة الخرطوم هي أقدم وأعرق جامعة في السودان، تأسست عام ١٩٠٢. تضم كليات متعددة في الطب والهندسة والقانون والعلوم، وتُعدّ الركيزة الأساسية للتعليم العالي في السودان وإحدى أبرز المؤسسات الأكاديمية في أفريقيا والعالم العربي.'
+      },
+      dongola: {
+        en: 'University of Dongola',
+        ar: 'جامعة دنقلا',
+        initials: 'UD',
+        color: ['#1a6b3a','#2bbf6e'],
+        region: 'Northern State',
+        descEn: 'It is a Sudanese public university located in the city of Dongola in the Northern State, and is considered one of the prominent academic institutions in northern Sudan. The university was founded in 1994 to contribute to the dissemination of knowledge, sustainable development, and linking scientific research with the local community.',
+        descAr: 'هي جامعة حكومية سودانية تقع في مدينة دنقلا بالولاية الشمالية، وتعتبر من المنارات الأكاديمية البارزة في شمال السودان. تأسست الجامعة في عام ١٩٩٤م لتسهم في نشر المعرفة والتنمية المستدامة وربط البحث العلمي بالمجتمع المحلي.'
+      },
+      'open-sudan': {
+        en: 'Open University of Sudan',
+        ar: 'جامعة السودان المفتوحة',
+        initials: 'OUS',
+        color: ['#4a2a8c','#7a5cbf'],
+        region: 'Khartoum State',
+        descEn: 'The Open University of Sudan provides distance and open learning opportunities to students across the country, making higher education accessible regardless of geographic or social barriers. It was established to widen access to quality education and supports lifelong learning for working professionals and remote communities.',
+        descAr: 'تتيح جامعة السودان المفتوحة فرص التعلم عن بُعد والتعليم المفتوح للطلاب في جميع أنحاء البلاد، مما يجعل التعليم العالي في متناول الجميع بصرف النظر عن الحواجز الجغرافية أو الاجتماعية. تدعم الجامعة التعليم مدى الحياة للمهنيين والمجتمعات النائية.'
+      },
+      'blue-nile': {
+        en: 'Blue Nile University',
+        ar: 'جامعة النيل الأزرق',
+        initials: 'BNU',
+        color: ['#0f4c75','#1b6ca8'],
+        region: 'Blue Nile State',
+        descEn: 'Blue Nile University serves the Blue Nile State, offering academic programmes tailored to the developmental needs of the region. It plays a crucial role in building local human capital and advancing research relevant to agriculture, natural resources, and community development in the Blue Nile corridor.',
+        descAr: 'تخدم جامعة النيل الأزرق ولاية النيل الأزرق، وتقدم برامج أكاديمية تلبي احتياجات التنمية في المنطقة. تؤدي دوراً محورياً في بناء رأس المال البشري المحلي وتطوير البحث في مجالات الزراعة والموارد الطبيعية وتنمية المجتمع.'
+      },
+      kordofan: {
+        en: 'University of Kordofan',
+        ar: 'جامعة كردفان',
+        initials: 'UK',
+        color: ['#2d6a2d','#3d9a3d'],
+        region: 'North Kordofan',
+        descEn: 'The University of Kordofan, located in El Obeid, is a key academic institution serving the Kordofan region. Founded to address the educational needs of Central Sudan, the university offers diverse programmes in sciences, humanities, and professional disciplines while contributing actively to regional development.',
+        descAr: 'جامعة كردفان، الواقعة في الأبيض، مؤسسة أكاديمية رئيسية تخدم منطقة كردفان. تأسست لتلبية الاحتياجات التعليمية في وسط السودان، وتقدم برامج متنوعة في العلوم والإنسانيات والتخصصات المهنية مع المساهمة الفعّالة في التنمية الإقليمية.'
+      },
+      sennar: {
+        en: 'University of Sennar',
+        ar: 'جامعة سنجة',
+        initials: 'US',
+        color: ['#7a3d00','#bf6a1a'],
+        region: 'Sennar State',
+        descEn: 'The University of Sennar is a public institution serving the Sennar State in southeastern Sudan. It offers a range of academic and professional programmes designed to serve the local community and contribute to the broader educational and economic development goals of the region.',
+        descAr: 'جامعة سنجة مؤسسة حكومية تخدم ولاية سنار في جنوب شرق السودان. تقدم مجموعة من البرامج الأكاديمية والمهنية المصممة لخدمة المجتمع المحلي والمساهمة في أهداف التنمية التعليمية والاقتصادية الأشمل للمنطقة.'
+      },
+      kassala: {
+        en: 'University of Kassala',
+        ar: 'جامعة كسلا',
+        initials: 'UKS',
+        color: ['#2d4a1a','#4a8a2d'],
+        region: 'Kassala State',
+        descEn: 'The University of Kassala, situated in the eastern state of Kassala, is dedicated to providing higher education to the diverse communities of eastern Sudan. The university focuses on programmes relevant to the agricultural, health, and social development needs of the region.',
+        descAr: 'جامعة كسلا، الواقعة في ولاية كسلا الشرقية، مكرّسة لتوفير التعليم العالي للمجتمعات المتنوعة في شرق السودان. تركز الجامعة على البرامج ذات الصلة باحتياجات التنمية الزراعية والصحية والاجتماعية في المنطقة.'
+      },
+      geneina: {
+        en: 'University of Geneina',
+        ar: 'جامعة الجنينة',
+        initials: 'UG',
+        color: ['#006b5b','#00a88a'],
+        region: 'West Darfur',
+        descEn: 'The University of Geneina is located in the capital of West Darfur State. It was established to bring higher education opportunities to one of Sudan\' most remote and underserved regions, playing a vital role in peacebuilding, community development, and academic advancement in the Darfur area.',
+        descAr: 'جامعة الجنينة تقع في عاصمة ولاية غرب دارفور. أُسست لإتاحة فرص التعليم العالي في إحدى أكثر مناطق السودان نائيةً، وتؤدي دوراً حيوياً في بناء السلام وتنمية المجتمع والتقدم الأكاديمي في منطقة دارفور.'
+      },
+      'red-sea': {
+        en: 'Red Sea University',
+        ar: 'جامعة البحر الأحمر',
+        initials: 'RSU',
+        color: ['#8c1a1a','#bf2b2b'],
+        region: 'Red Sea State',
+        descEn: 'Red Sea University, based in Port Sudan, serves the Red Sea State and surrounding coastal communities. The university specialises in maritime studies, fisheries, and environmental sciences in addition to general academic programmes, capitalising on its unique coastal location to offer specialised, regionally relevant education.',
+        descAr: 'جامعة البحر الأحمر، ومقرها بورتسودان، تخدم ولاية البحر الأحمر والمجتمعات الساحلية المحيطة بها. تتخصص في الدراسات البحرية والأسماك والعلوم البيئية فضلاً عن البرامج الأكاديمية العامة، مستفيدةً من موقعها الساحلي الفريد.'
+      },
+      gezira: {
+        en: 'University of Gezira',
+        ar: 'جامعة الجزيرة',
+        initials: 'UGZ',
+        color: ['#0d5c3a','#1a9462'],
+        region: 'Gezira State',
+        descEn: 'The University of Gezira, located in Wad Madani, is one of Sudan\' leading universities, renowned for its medical and agricultural faculties. Established in 1975, it has played a transformative role in health sciences education and agricultural research, contributing significantly to Sudan\' rural development.',
+        descAr: 'جامعة الجزيرة، الواقعة في ود مدني، من أبرز جامعات السودان، وتشتهر بكلياتها الطبية والزراعية. تأسست عام ١٩٧٥، وأدّت دوراً تحويلياً في تعليم العلوم الصحية والبحث الزراعي، مما أسهم بشكل كبير في التنمية الريفية في السودان.'
+      },
+      gadarif: {
+        en: 'University of Gadarif',
+        ar: 'جامعة القضارف',
+        initials: 'UGA',
+        color: ['#3d1a6b','#6b3dbf'],
+        region: 'Gadarif State',
+        descEn: 'The University of Gadarif serves the eastern state of Gadarif and its surrounding agricultural heartland. It offers programmes with a focus on agricultural sciences, veterinary medicine, and community development, supporting one of Sudan\' most productive farming regions with skilled graduates and applied research.',
+        descAr: 'جامعة القضارف تخدم ولاية القضارف الشرقية وأراضيها الزراعية المحيطة. تقدم برامج تركز على العلوم الزراعية والطب البيطري وتنمية المجتمع، وتدعم إحدى أكثر المناطق الزراعية إنتاجيةً في السودان بخريجين مهرة وبحوث تطبيقية.'
+      },
+      'white-nile': {
+        en: 'White Nile University',
+        ar: 'جامعة النيل الأبيض',
+        initials: 'WNU',
+        color: ['#1a4a6b','#2b7abf'],
+        region: 'White Nile State',
+        descEn: 'White Nile University is located in Kosti, the capital of White Nile State. The university offers a variety of undergraduate programmes and is committed to expanding access to higher education along the White Nile corridor, focusing on sciences, engineering, education, and social sciences.',
+        descAr: 'جامعة النيل الأبيض تقع في كوستي عاصمة ولاية النيل الأبيض. تقدم الجامعة مجموعة متنوعة من البرامج الجامعية، وهي ملتزمة بتوسيع الوصول إلى التعليم العالي على امتداد ممر النيل الأبيض.'
+      },
+      'al-fashir': {
+        en: 'University of Al Fashir',
+        ar: 'جامعة الفاشر',
+        initials: 'UAF',
+        color: ['#5c3d00','#9c6d1a'],
+        region: 'North Darfur',
+        descEn: 'The University of Al Fashir is situated in Al Fashir, the capital of North Darfur State. As a beacon of higher education in Darfur, it serves students from across the region and is committed to fostering intellectual development, peace, and social cohesion through quality academic programmes.',
+        descAr: 'جامعة الفاشر تقع في الفاشر عاصمة ولاية شمال دارفور. بوصفها منارة للتعليم العالي في دارفور، تخدم الطلاب من جميع أنحاء المنطقة وتلتزم بتعزيز التطور الفكري والسلام والتماسك الاجتماعي من خلال برامج أكاديمية متميزة.'
+      }
+    };
+
+    const colleges = [
+      {
+        id: 'medical',
+        en: 'Colleges of Medical, Health, and Nursing',
+        ar: 'الكليات الطبية والصحية والتمريض',
+        icon: '🏥',
+        bg: 'rgba(220,38,38,0.1)',
+        color: '#dc2626'
+      },
+      {
+        id: 'science',
+        en: 'Colleges of Scientific and Engineering',
+        ar: 'الكليات العلمية والهندسية',
+        icon: '⚙️',
+        bg: 'rgba(43,76,140,0.1)',
+        color: '#2b4c8c'
+      },
+      {
+        id: 'agriculture',
+        en: 'Colleges of Agricultural and Environmental',
+        ar: 'الكليات الزراعية والبيئية',
+        icon: '🌿',
+        bg: 'rgba(22,163,74,0.1)',
+        color: '#16a34a'
+      },
+      {
+        id: 'humanities',
+        en: 'Colleges of Humanities, Education, and Administrative',
+        ar: 'الكليات الإنسانية والتربوية والإدارية',
+        icon: '📚',
+        bg: 'rgba(196,148,58,0.1)',
+        color: '#c4943a'
+      }
+    ];
+
+    // Read URL param
+    const params = new URLSearchParams(window.location.search);
+    const uniId  = params.get('uni') || 'dongola';
+    const uni    = universities[uniId] || universities['dongola'];
+
+    // Populate hero
+    document.getElementById('nav-uni-name').textContent  = uni.en;
+    document.getElementById('hero-region').textContent   = uni.region + ' · Sudan';
+    document.getElementById('hero-name-ar').textContent  = uni.ar;
+    document.getElementById('hero-name-en').textContent  = uni.en;
+    document.getElementById('desc-en').textContent       = uni.descEn;
+    document.getElementById('desc-ar').textContent       = uni.descAr;
+    document.title = uni.en + ' – Sudan Educational Portal';
+
+    document.getElementById('hero-logo-img').src = `assets/logos/${uniId}.png`;
+    const logoEl = document.getElementById('hero-logo');
+    logoEl.textContent = uni.initials;
+    logoEl.style.background = `linear-gradient(135deg, ${uni.color[0]}, ${uni.color[1]})`;
+
+    // Populate colleges
+    const grid = document.getElementById('colleges-grid');
+    colleges.forEach(c => {
+      const a = document.createElement('a');
+      a.className = 'college-card';
+      a.href = `login.html?uni=${uniId}&college=${c.id}`;
+      a.setAttribute('aria-label', `Enter ${c.en}`);
+      a.innerHTML = `
+        <div class="college-icon" style="background:${c.bg}; color:${c.color};">${c.icon}</div>
+        <div class="college-text">
+          <div class="college-name-en">${c.en}</div>
+          <div class="college-name-ar">${c.ar}</div>
+        </div>
+        <svg class="college-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+      grid.appendChild(a);
+    });
+  </script>
+  <style>
+    .nav-lang span { cursor: pointer; opacity: 0.7; transition: opacity 0.2s, font-weight 0.2s; }
+    .nav-lang span:hover, .nav-lang span.active { opacity: 1; font-weight: 700; color: var(--accent); }
+  </style>
+  <script src="i18n.js"></script>
+</body>
+</html>

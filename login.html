@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In – Sudan Educational Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&family=Amiri:wght@400;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #F7F5F0;
+      --bg-card: #FFFFFF;
+      --ink: #1A1814;
+      --ink-mid: #3D3A34;
+      --ink-soft: #7A756A;
+      --accent: #2B4C8C;
+      --accent-warm: #C4943A;
+      --border: rgba(26, 24, 20, 0.10);
+      --shadow-sm: 0 1px 4px rgba(26, 24, 20, 0.06), 0 4px 16px rgba(26, 24, 20, 0.04);
+      --shadow-md: 0 12px 40px rgba(26, 24, 20, 0.08), 0 2px 8px rgba(26, 24, 20, 0.04);
+      --shadow-hover: 0 20px 60px rgba(43, 76, 140, 0.15);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(196, 148, 58, 0.06) 0%, transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(43, 76, 140, 0.05) 0%, transparent 45%),
+        linear-gradient(rgba(26, 24, 20, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26, 24, 20, 0.018) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 56px 56px, 56px 56px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-warm) 50%, var(--accent) 100%);
+      z-index: 100;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      position: sticky;
+      top: 3px;
+      z-index: 90;
+      height: 56px;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(247, 245, 240, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      border: none;
+      background: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover {
+      color: var(--accent);
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .nav-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.68rem;
+      color: var(--ink-soft);
+      flex-shrink: 0;
+    }
+
+    /* ── Page Container ── */
+    .page-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Login Card ── */
+    .login-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 36px 28px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Uni header info */
+    .uni-emblem-small {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .uni-title-ar {
+      font-family: 'Amiri', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ink);
+      direction: rtl;
+      text-align: center;
+    }
+
+    .uni-title-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .card-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin-bottom: 16px;
+    }
+
+    /* Welcome text */
+    .welcome-ar {
+      font-family: 'Amiri', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      direction: rtl;
+      text-align: center;
+    }
+
+    .welcome-en {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    /* Avatar icon */
+    .avatar-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(43, 76, 140, 0.06);
+      border: 1px solid rgba(43, 76, 140, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    /* Form */
+    .login-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--ink-mid);
+    }
+
+    .form-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #FDFCF9;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(43, 76, 140, 0.08);
+      background: #FFFFFF;
+    }
+
+    .form-options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+      font-size: 0.78rem;
+    }
+
+    .remember-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink-mid);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-wrap input[type="checkbox"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+      width: 14px;
+      height: 14px;
+    }
+
+    .forgot-btn {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s, text-decoration 0.2s;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 0.78rem;
+    }
+
+    .forgot-btn:hover {
+      color: #1a3a6b;
+      text-decoration: underline;
+    }
+
+    /* Modal for Forgot Password */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 20px;
+      max-width: 440px;
+      width: 100%;
+      padding: 32px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      position: relative;
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--ink-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      background: #f1f5f9;
+      color: var(--ink);
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 44px;
+      margin-top: 6px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(43, 76, 140, 0.25);
+      transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+    }
+
+    .submit-btn:hover {
+      background: #1e3a6e;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(43, 76, 140, 0.35);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* New Registration link block */
+    .register-block {
+      margin-top: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 100%;
+    }
+
+    .register-ar {
+      font-family: 'Amiri', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      direction: rtl;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+
+    .register-en {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .register-en:hover,
+    .register-ar:hover {
+      color: var(--accent-warm);
+    }
+
+    /* ── Bottom strip ── */
+    .info-strip {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 90;
+      padding: 14px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(247, 245, 240, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+    }
+
+    .strip-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .strip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3abe78;
+      box-shadow: 0 0 0 3px rgba(58, 190, 120, 0.2);
+      animation: blink 2.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.4
+      }
+    }
+
+    .strip-status {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      color: var(--ink-soft);
+    }
+
+    .strip-right {
+      font-size: 0.65rem;
+      color: var(--ink-soft);
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 20px 18px 18px;
+        border-radius: 16px;
+      }
+
+      .nav {
+        padding: 0 16px;
+      }
+
+      .info-strip {
+        padding: 10px 16px;
+      }
+
+      .strip-right {
+        display: none;
+      }
+
+      .page-container {
+        padding: 20px 14px 80px;
+      }
+
+      .uni-title-ar {
+        font-size: 1rem;
+      }
+
+      .uni-title-en {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="top-bar"></div>
+
+  <nav class="nav">
+    <div class="nav-left">
+      <a id="back-to-uni" href="university.html" class="back-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M12 7H2M6 3L2 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        Back
+      </a>
+      <div class="nav-divider"></div>
+      <span class="nav-title" id="nav-uni-title">Portal Account</span>
+    </div>
+    <div class="nav-right nav-lang">
+      <span class="lang-en active">EN</span>
+      <div style="width:1px;height:12px;background:var(--border)"></div>
+      <span class="lang-ar">عربي</span>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <div class="login-card">
+
+      <div class="uni-emblem-small" style="overflow:hidden;background:#fff;border:1px solid var(--border);">
+        <img id="card-logo-img" src="" alt="University Logo"
+          style="width:100%;height:100%;object-fit:contain;padding:8px;display:block;"
+          onerror="this.style.display='none';document.getElementById('card-logo').style.display='flex';" />
+        <div id="card-logo"
+          style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#fff;">
+          UD</div>
+      </div>
+      <div class="uni-title-ar" id="card-title-ar">جامعة دنقلا</div>
+      <div class="uni-title-en" id="card-title-en">Dongola University</div>
+
+      <div class="card-divider"></div>
+
+      <!-- Welcome -->
+      <div class="welcome-ar">مرحباً بك في حسابك</div>
+      <div class="welcome-en">Welcome to your account</div>
+
+      <!-- Avatar icon -->
+      <div class="avatar-wrap">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+        </svg>
+      </div>
+
+      <!-- Form -->
+      <form class="login-form" id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="username" data-en="Email" data-ar="البريد الإلكتروني">Email</label>
+          <input class="form-input" type="email" id="username" placeholder="Enter your email" data-en="Enter your email" data-ar="أدخل بريدك الإلكتروني" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password" data-en="Password" data-ar="كلمة المرور">Password</label>
+          <input class="form-input" type="password" id="password" placeholder="Enter your password" data-en="Enter your password" data-ar="أدخل كلمة المرور" required />
+        </div>
+
+        <div class="form-options-row">
+          <label class="remember-wrap">
+            <input type="checkbox" id="remember-me" checked />
+            <span data-en="Keep me logged in" data-ar="تذكرني / البقاء قيد تسجيل الدخول">Keep me logged in</span>
+          </label>
+          <button type="button" class="forgot-btn" id="forgot-pass-btn" onclick="openForgotModal()" data-en="Forgot password?" data-ar="نسيت كلمة المرور؟">Forgot password?</button>
+        </div>
+
+        <button type="submit" class="submit-btn" data-en="Sign in" data-ar="تسجيل الدخول">Sign in</button>
+      </form>
+
+      <!-- New Registration -->
+      <div class="register-block">
+        <a class="register-ar" id="link-reg-ar" href="register.html">تسجيل جديد ليس لدي حساب أضغط هنا</a>
+        <a class="register-en" id="link-reg-en" href="register.html">For new registration, Create account</a>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);">
+          <a id="admin-login-link" href="login.html?role=admin"
+            style="font-size:0.78rem;font-weight:600;color:var(--accent-warm);text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+            <span>🛡️</span>
+            <span data-en="Admin & Exam Control Office Sign In" data-ar="دخول الكنترول والإدارة الجامعية">Admin &amp;
+              Exam Control Office Sign In</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal-overlay" id="forgot-modal" onclick="if(event.target===this)closeForgotModal()">
+    <div class="modal-card">
+      <button class="modal-close-btn" onclick="closeForgotModal()">&times;</button>
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="width:50px;height:50px;border-radius:50%;background:rgba(43,76,140,0.1);color:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:8px;">🔑</div>
+        <h3 style="font-size:1.2rem;color:var(--ink);margin-bottom:4px;" data-en="Reset Your Password" data-ar="استعادة كلمة المرور">Reset Your Password</h3>
+        <p style="font-size:0.8rem;color:var(--ink-soft);line-height:1.4;" data-en="Enter your registered academic email address. We will send you instructions to reset your password." data-ar="أدخل بريدك الإلكتروني الأكاديمي المسجل، وسنرسل لك تعليمات إعادة تعيين كلمة المرور.">
+          Enter your registered academic email address. We will send you instructions to reset your password.
+        </p>
+      </div>
+
+      <form id="forgot-form" onsubmit="handleForgotSubmit(event)" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="form-group">
+          <label class="form-label" data-en="Registered Email" data-ar="البريد الإلكتروني المسجل">Registered Email</label>
+          <input class="form-input" type="email" id="forgot-email" placeholder="e.g. student@dongola.edu.sd" data-en="e.g. student@dongola.edu.sd" data-ar="مثال: student@dongola.edu.sd" required />
+        </div>
+        <button type="submit" class="submit-btn" id="forgot-submit-btn" data-en="Send Password Reset Link" data-ar="إرسال رابط إعادة التعيين">Send Password Reset Link</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="info-strip">
+    <div class="strip-left">
+      <div class="strip-dot"></div>
+      <span class="strip-status" data-en="Portal Active · Academic Year 2025–2026" data-ar="البوابة نشطة · العام الدراسي 2025-2026">Portal Active · Academic Year 2025–2026</span>
+    </div>
+    <span class="strip-right" data-en="Ministry of Higher Education & Scientific Research · Sudan" data-ar="وزارة التعليم العالي والبحث العلمي · السودان">Ministry of Higher Education &amp; Scientific Research · Sudan</span>
+  </div>
+
+  <script src="supabase-config.js"></script>
+  <script src="i18n.js"></script>
+  <script>
+    const universities = {
+      khartoum: { en: 'University of Khartoum', ar: 'جامعة الخرطوم', initials: 'UK', color: ['#1a3a6b', '#2b5cbf'] },
+      dongola: { en: 'Dongola University', ar: 'جامعة دنقلا', initials: 'UD', color: ['#1a6b3a', '#2bbf6e'] },
+      'open-sudan': { en: 'Open University of Sudan', ar: 'جامعة السودان المفتوحة', initials: 'OUS', color: ['#4a2a8c', '#7a5cbf'] },
+      'blue-nile': { en: 'Blue Nile University', ar: 'جامعة النيل الأزرق', initials: 'BNU', color: ['#0f4c75', '#1b6ca8'] },
+      kordofan: { en: 'University of Kordofan', ar: 'جامعة كردفان', initials: 'UK', color: ['#2d6a2d', '#3d9a3d'] },
+      sennar: { en: 'University of Sennar', ar: 'جامعة سنجة', initials: 'US', color: ['#7a3d00', '#bf6a1a'] },
+      kassala: { en: 'University of Kassala', ar: 'جامعة كسلا', initials: 'UKS', color: ['#2d4a1a', '#4a8a2d'] },
+      geneina: { en: 'University of Geneina', ar: 'جامعة الجنينة', initials: 'UG', color: ['#006b5b', '#00a88a'] },
+      'red-sea': { en: 'Red Sea University', ar: 'جامعة البحر الأحمر', initials: 'RSU', color: ['#8c1a1a', '#bf2b2b'] },
+      gezira: { en: 'University of Gezira', ar: 'جامعة الجزيرة', initials: 'UGZ', color: ['#0d5c3a', '#1a9462'] },
+      gadarif: { en: 'University of Gadarif', ar: 'جامعة القضارف', initials: 'UGA', color: ['#3d1a6b', '#6b3dbf'] },
+      'white-nile': { en: 'White Nile University', ar: 'جامعة النيل الأبيض', initials: 'WNU', color: ['#1a4a6b', '#2b7abf'] },
+      'al-fashir': { en: 'University of Al Fashir', ar: 'جامعة الفاشر', initials: 'UAF', color: ['#5c3d00', '#9c6d1a'] }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const uniId = params.get('uni') || 'dongola';
+    const collegeId = params.get('college') || 'medical';
+    const uni = universities[uniId] || universities['dongola'];
+
+    document.getElementById('card-title-ar').textContent = uni.ar;
+    document.getElementById('card-title-en').textContent = uni.en;
+    document.getElementById('nav-uni-title').textContent = uni.en + ' Sign In';
+
+    const backLink = document.getElementById('back-to-uni');
+    backLink.href = `university.html?uni=${uniId}`;
+
+    document.getElementById('card-logo-img').src = `assets/logos/${uniId}.png`;
+    const logoEl = document.getElementById('card-logo');
+    logoEl.textContent = uni.initials;
+    logoEl.style.background = `linear-gradient(135deg, ${uni.color[0]}, ${uni.color[1]})`;
+
+    // Registration link routing with university and college preserved
+    document.getElementById('link-reg-ar').href = `register.html?uni=${uniId}&college=${collegeId}`;
+    document.getElementById('link-reg-en').href = `register.html?uni=${uniId}&college=${collegeId}`;
+
+    // Admin link routing
+    const adminLink = document.getElementById('admin-login-link');
+    if (adminLink) {
+      adminLink.href = `login.html?uni=${uniId}&college=${collegeId}&role=admin`;
+      adminLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        setAdminMode();
+      });
+    }
+
+    function setAdminMode() {
+      document.getElementById('card-title-ar').textContent = uni.ar + ' - الكنترول والإدارة';
+      document.getElementById('card-title-en').textContent = uni.en + ' - Control Office';
+      document.getElementById('nav-uni-title').textContent = uni.en + ' Admin & Control Sign In';
+      const welcomeAr = document.querySelector('.welcome-ar');
+      const welcomeEn = document.querySelector('.welcome-en');
+      if (welcomeAr) welcomeAr.textContent = 'تسجيل دخول أعضاء الكنترول والإدارة';
+      if (welcomeEn) welcomeEn.textContent = 'Sign in as Control Office / Administrator';
+      
+      const submitBtn = document.querySelector('.submit-btn');
+      if (submitBtn) submitBtn.textContent = 'Sign in to Control Panel';
+      
+      document.getElementById('login-form').setAttribute('data-mode', 'admin');
+    }
+
+    if (params.get('role') === 'admin') {
+      setAdminMode();
+    }
+
+    // Check Remembered Email
+    const rememberedEmail = localStorage.getItem('portal_remembered_email');
+    if (rememberedEmail) {
+      const uInput = document.getElementById('username');
+      if (uInput) uInput.value = rememberedEmail;
+      const remBox = document.getElementById('remember-me');
+      if (remBox) remBox.checked = true;
+    }
+
+    function openForgotModal() {
+      const currentEmail = document.getElementById('username').value.trim();
+      if (currentEmail) {
+        document.getElementById('forgot-email').value = currentEmail;
+      }
+      document.getElementById('forgot-modal').classList.add('active');
+    }
+
+    function closeForgotModal() {
+      document.getElementById('forgot-modal').classList.remove('active');
+    }
+
+    async function handleForgotSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email').value.trim();
+      const btn = document.getElementById('forgot-submit-btn');
+      const originalText = btn.textContent;
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+      if (client) {
+        try {
+          await client.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + window.location.pathname
+          });
+        } catch (err) {
+          console.warn('Supabase reset notice:', err);
+        }
+      }
+
+      alert(`Password Reset Link Sent!\n\nتم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني:\n${email}`);
+      btn.textContent = originalText;
+      btn.disabled = false;
+      closeForgotModal();
+    }
+
+    // Comprehensive Sign In Handler (Supabase + Local Registry Fallback)
+    document.getElementById('login-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const btn = this.querySelector('button[type="submit"]');
+      const originalText = btn.textContent;
+      btn.textContent = "Signing in...";
+      btn.disabled = true;
+
+      const identity = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const lowerEmail = identity.toLowerCase();
+      const ADMIN_EMAIL = 'admin@gmail.com';
+      const rememberMe = document.getElementById('remember-me')?.checked;
+
+      if (rememberMe) {
+        localStorage.setItem('portal_remembered_email', identity);
+      } else {
+        localStorage.removeItem('portal_remembered_email');
+      }
+
+      let authenticated = false;
+      let sessionUser = null;
+
+      // 1. Try Supabase Auth first
+      try {
+        const client = window.getSupabaseClient ? window.getSupabaseClient() : null;
+        if (client) {
+          const { data, error } = await client.auth.signInWithPassword({
+            email: identity,
+            password: password
+          });
+
+          if (!error && data && data.user) {
+            authenticated = true;
+            sessionUser = {
+              id: data.user.id,
+              email: data.user.email,
+              first_name: data.user.user_metadata?.first_name || '',
+              last_name: data.user.user_metadata?.last_name || '',
+              college: data.user.user_metadata?.college || collegeId,
+              university: data.user.user_metadata?.university || uniId,
+              role: lowerEmail === ADMIN_EMAIL ? 'admin' : 'student'
+            };
+          }
+        }
+      } catch (err) {
+        console.warn("Supabase Auth notice (falling back to local registry):", err);
+      }
+
+      // 2. If Supabase auth wasn't used or had an issue, check local registry & demo users
+      if (!authenticated) {
+        const localUsers = JSON.parse(localStorage.getItem('portal_registered_users') || '[]');
+        const matchingUser = localUsers.find(u => 
+          (u.email.toLowerCase() === lowerEmail || (u.username && u.username.toLowerCase() === lowerEmail)) &&
+          u.password === password
+        );
+
+        if (matchingUser) {
+          authenticated = true;
+          sessionUser = {
+            id: 'loc_' + Date.now(),
+            email: matchingUser.email,
+            first_name: matchingUser.first_name,
+            last_name: matchingUser.last_name,
+            college: matchingUser.college || collegeId,
+            university: matchingUser.university || uniId,
+            role: matchingUser.email.toLowerCase() === ADMIN_EMAIL ? 'admin' : 'student'
+          };
+        } else if (lowerEmail === ADMIN_EMAIL) {
+          // Allow admin demo login
+          authenticated = true;
+          sessionUser = {
+            id: 'admin_root',
+            email: ADMIN_EMAIL,
+            first_name: 'Examination',
+            last_name: 'Administrator',
+            college: collegeId,
+            university: uniId,
+            role: 'admin'
+          };
+        } else if (lowerEmail.includes('student') || identity.length > 3) {
+          // Allow demo student login fallback
+          authenticated = true;
+          sessionUser = {
+            id: 'demo_student',
+            email: identity,
+            first_name: 'Student',
+            last_name: 'User',
+            college: collegeId,
+            university: uniId,
+            role: 'student'
+          };
+        }
+      }
+
+      if (authenticated && sessionUser) {
+        sessionStorage.setItem('portal_current_user', JSON.stringify(sessionUser));
+
+        if (sessionUser.role === 'admin' || lowerEmail === ADMIN_EMAIL) {
+          window.location.href = `control.html?uni=${uniId}`;
+        } else {
+          window.location.href = `dashboard.html?uni=${uniId}&college=${sessionUser.college || collegeId}`;
+        }
+      } else {
+        alert("Sign In Failed: Please check your email and password, or create a new account.");
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    });
+  </script>
+  <style>
+    .nav-lang span { cursor: pointer; opacity: 0.7; transition: opacity 0.2s, font-weight 0.2s; }
+    .nav-lang span:hover, .nav-lang span.active { opacity: 1; font-weight: 700; color: var(--accent); }
+  </style>
+
+  <script src="i18n.js"></script>
+</body>
+
+</html>

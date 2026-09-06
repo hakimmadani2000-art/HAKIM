@@ -1,0 +1,26 @@
+{
+  "name": "hakims-uni-portal",
+  "version": "1.0.0",
+  "description": "Sudan Higher Education Academic Portal with offline-first file uploads and cloud sync",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required - static site'"
+  },
+  "keywords": [
+    "sudan",
+    "university",
+    "education",
+    "portal",
+    "supabase",
+    "netlify"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}
